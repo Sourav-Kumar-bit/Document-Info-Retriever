@@ -2,16 +2,32 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
-    <title>Document Info Retriever</title>
+
+    <!-- Site name lives in exactly two places: here, and the brand block in
+         app.html. Change both if you rename it. -->
+    <title>Pagewise — ask your documents</title>
+
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta
       name="description"
-      content="Upload a document and ask questions about it. Every answer cites the page it came from."
+      content="Upload a PDF and ask it anything. Every answer cites the page it came from."
     />
+
+    <!-- SVG first: modern browsers prefer it and it stays sharp at any size.
+         The .ico is the fallback for older browsers and Windows pinned tiles. -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
+
     <meta name="theme-color" content="#05070f" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#e6ebf8" media="(prefers-color-scheme: light)" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <meta property="og:title" content="Pagewise" />
+    <meta property="og:description" content="Ask a document anything. Every answer cites its page." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="icon-512.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

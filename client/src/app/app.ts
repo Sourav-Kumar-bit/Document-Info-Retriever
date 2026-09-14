@@ -37,6 +37,7 @@ export class App implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.store.loadLimits();
     this.store.loadLibrary();
   }
 

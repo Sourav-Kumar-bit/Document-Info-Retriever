@@ -6,8 +6,6 @@ import { TiltDirective } from '../../shared/tilt.directive';
 
 type Phase = 'idle' | 'uploading' | 'queued' | 'rejected';
 
-const MAX_BYTES = 10 * 1024 * 1024;
-
 @Component({
   selector: 'app-uploader',
   imports: [TiltDirective],
@@ -65,9 +63,12 @@ export class Uploader {
     if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
       return this.reject('That is not a PDF. Only PDF files can be indexed.');
     }
-    if (file.size > MAX_BYTES) {
+    // Threshold comes from the server via /limits, so raising it there needs
+    // no frontend redeploy and the two can never disagree.
+    const maxMb = this.store.limits().max_upload_mb;
+    if (file.size > maxMb * 1024 * 1024) {
       const mb = (file.size / 1024 / 1024).toFixed(1);
-      return this.reject(`That file is ${mb} MB. The limit is 10 MB.`);
+      return this.reject(`That file is ${mb} MB. The limit is ${maxMb} MB.`);
     }
     if (file.size === 0) {
       return this.reject('That file is empty.');

@@ -92,6 +92,12 @@
             </div>
           } @else if (turn.response; as response) {
             <div class="a">
+              @if (response.resolved_question; as resolved) {
+                <p class="resolved">
+                  <span class="eyebrow">Searched for</span>
+                  {{ resolved }}
+                </p>
+              }
               <p class="prose">{{ response.answer }}</p>
 
               @if (response.sources.length > 0) {

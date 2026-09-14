@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pagewise">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5B86FF"/>
+      <stop offset="50%" stop-color="#1856FF"/>
+      <stop offset="100%" stop-color="#7C5CFF"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+
+  <!-- ghost sheet behind -->
+  <rect x="12" y="15" width="24" height="31" rx="4" fill="#fff" opacity="0.3"/>
+  <!-- the page -->
+  <rect x="18" y="10" width="25" height="32" rx="4" fill="#fff"/>
+  <!-- ruled lines, in brand blue so they survive on white -->
+  <path d="M24 19h13M24 25h13M24 31h7" stroke="#1856FF" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- citation lens, in the amber that means "from the document" -->
+  <circle cx="41" cy="41" r="12" fill="#0B1020" opacity="0.35"/>
+  <circle cx="41" cy="41" r="12" fill="none" stroke="#FFB477" stroke-width="5"/>
+  <path d="M50 50 57.5 57.5" stroke="#FFB477" stroke-width="6" stroke-linecap="round"/>
+</svg>

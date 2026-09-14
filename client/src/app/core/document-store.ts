@@ -2,10 +2,23 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Subscription, interval, switchMap } from 'rxjs';
 
 import { ApiService } from './api.service';
-import { ChatTurn, DocumentSummary, QueryResponse, relevanceOf } from './models';
+import {
+  ChatTurn,
+  DocumentSummary,
+  HistoryTurn,
+  Limits,
+  QueryResponse,
+  relevanceOf,
+} from './models';
 
 const POLL_MS = 2000;
-const POLL_TIMEOUT_MS = 180_000; // 3 minutes, then give up rather than poll forever
+// A 400-page PDF is ~1600 chunks, which is several minutes of embedding calls
+// with backoff on the free tier. The old 3-minute timeout would mark a
+// perfectly healthy ingestion as failed while the server was still working.
+const POLL_TIMEOUT_MS = 900_000; // 15 minutes
+
+// How many previous turns to send. Matches HISTORY_TURNS on the server.
+const HISTORY_DEPTH = 3;
 
 /**
  * Single source of truth, shared by every feature component.
@@ -23,6 +36,12 @@ export class DocumentStore {
   readonly activeId = signal<string | null>(null);
   readonly turns = signal<ChatTurn[]>([]);
   readonly loadingLibrary = signal(false);
+  /** Server-published limits. Sensible defaults until /limits responds. */
+  readonly limits = signal<Limits>({
+    max_upload_mb: 50,
+    max_pages: 400,
+    max_documents: 5,
+  });
   readonly libraryError = signal<string | null>(null);
 
   private pollers = new Map<string, Subscription>();
@@ -90,6 +109,11 @@ export class DocumentStore {
   );
 
   // ---------------------------------------------------------------- library
+  loadLimits(): void {
+    // Failure is non-fatal — the defaults above stand in.
+    this.api.limits().subscribe({ next: (l) => this.limits.set(l), error: () => {} });
+  }
+
   loadLibrary(): void {
     this.loadingLibrary.set(true);
     this.libraryError.set(null);
@@ -182,9 +206,25 @@ export class DocumentStore {
   }
 
   // ------------------------------------------------------------------- chat
+  /**
+   * The last few answered turns, oldest first.
+   *
+   * Only turns that actually produced an answer are included — sending a
+   * failed turn would have the rewriter resolving pronouns against an error
+   * message.
+   */
+  private history(): HistoryTurn[] {
+    return this.turns()
+      .filter((t) => t.response?.enough_info && t.response.answer)
+      .slice(-HISTORY_DEPTH)
+      .map((t) => ({ question: t.question, answer: t.response!.answer }));
+  }
+
   ask(question: string): void {
     const documentId = this.activeId();
     if (!documentId) return;
+
+    const history = this.history();
 
     const turn: ChatTurn = {
       id: crypto.randomUUID(),
@@ -196,7 +236,7 @@ export class DocumentStore {
     };
     this.turns.update((list) => [...list, turn]);
 
-    this.api.askQuestion(documentId, question).subscribe({
+    this.api.askQuestion(documentId, question, history).subscribe({
       next: (response: QueryResponse) => this.settle(turn.id, { response, pending: false }),
       error: (err: Error) => this.settle(turn.id, { error: err.message, pending: false }),
     });

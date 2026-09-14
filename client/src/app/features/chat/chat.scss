@@ -292,6 +292,25 @@
   max-width: 52rem;
 }
 
+/* Shown when the backend rewrote a follow-up. Without it, "why does it help?"
+   returning an answer about multi-head attention looks like the model answered
+   a question you never asked. */
+.resolved {
+  margin-bottom: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  background: var(--well);
+  border-left: 2px solid var(--iris);
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.resolved .eyebrow {
+  display: block;
+  color: var(--iris);
+  margin-bottom: 1px;
+}
+
 .prose {
   line-height: 1.72;
   overflow-wrap: anywhere;

@@ -9,7 +9,13 @@ import { Observable, filter, map, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { DocumentSummary, QueryResponse, UploadAccepted } from './models';
+import {
+  DocumentSummary,
+  HistoryTurn,
+  Limits,
+  QueryResponse,
+  UploadAccepted,
+} from './models';
 
 export type UploadEvent =
   | { kind: 'progress'; percent: number }
@@ -23,6 +29,13 @@ export class ApiService {
   health(): Observable<{ status: string }> {
     return this.http
       .get<{ status: string }>(`${this.base}/health`)
+      .pipe(catchError(toFriendlyError));
+  }
+
+  /** Upload thresholds, published by the server so they live in one place. */
+  limits(): Observable<Limits> {
+    return this.http
+      .get<Limits>(`${this.base}/limits`)
       .pipe(catchError(toFriendlyError));
   }
 
@@ -78,9 +91,21 @@ export class ApiService {
       );
   }
 
-  askQuestion(documentId: string, question: string): Observable<QueryResponse> {
+  /**
+   * History lets the backend resolve follow-ups ("why does it help?") and
+   * style requests ("say that more simply"). Without it, those messages get
+   * embedded literally and match nothing in the document.
+   */
+  askQuestion(
+    documentId: string,
+    question: string,
+    history: HistoryTurn[] = [],
+  ): Observable<QueryResponse> {
     return this.http
-      .post<QueryResponse>(`${this.base}/documents/${documentId}/query`, { question })
+      .post<QueryResponse>(`${this.base}/documents/${documentId}/query`, {
+        question,
+        history,
+      })
       .pipe(catchError(toFriendlyError));
   }
 }
@@ -104,7 +129,7 @@ function toFriendlyError(err: HttpErrorResponse) {
   } else if (err.status === 404) {
     message = 'That document no longer exists.';
   } else if (err.status === 413) {
-    message = 'That file is too large. The limit is 10 MB.';
+    message = 'That file is too large for the server to accept.';
   } else {
     message = `Request failed (HTTP ${err.status}).`;
   }

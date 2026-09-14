@@ -49,7 +49,10 @@
       <p class="hint">
         Drop a PDF here, or <button type="button" class="link" (click)="browse()">choose a file</button>.
       </p>
-      <p class="mono tiny meta">PDF · 10 MB max · {{ store.documents().length }}/5 used</p>
+      <p class="mono tiny meta">
+        PDF · {{ store.limits().max_upload_mb }} MB · {{ store.limits().max_pages }} pages max
+        · {{ store.documents().length }}/{{ store.limits().max_documents }} used
+      </p>
     }
   }
 
