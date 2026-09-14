@@ -31,9 +31,20 @@ ALLOWED_ORIGINS = [
 
 MAX_DOCS_PER_SESSION = int(get_env_variable("MAX_DOCS_PER_SESSION", "5"))
 
+# ------------------------------------------------------------------ limits
+MAX_UPLOAD_MB = int(get_env_variable("MAX_UPLOAD_MB", "20"))
+MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
+MAX_PAGES = int(get_env_variable("MAX_PAGES", "400"))
+
+EMBED_BATCH = int(get_env_variable("EMBED_BATCH", "50"))
+
 CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 150
 EMBED_DIM = 768
+
+# --------------------------------------------------------- conversation
+HISTORY_TURNS = 3
+HISTORY_ANSWER_CHARS = 300
 
 document_embeddings = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-001", api_key=API_KEY,
@@ -47,4 +58,10 @@ query_embeddings = GoogleGenerativeAIEmbeddings(
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-3.5-flash", api_key=API_KEY, temperature=0
+)
+
+# Separate instance for the rewrite step. Same model, but keeping it distinct
+# means you can point it at a cheaper one later without touching the answerer.
+rewriter_llm = ChatGoogleGenerativeAI(
+    model="gemini-3.5-flash", api_key=API_KEY, temperature=0, max_output_tokens=256
 )

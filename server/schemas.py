@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 class DocumentOut(BaseModel):
     id: str
     filename: str
-    status: str                 # processing | ready | failed
+    status: str
     error: str | None = None
     page_count: int | None = None
     chunk_count: int | None = None
@@ -18,16 +18,21 @@ class UploadAccepted(BaseModel):
     status: str = "processing"
 
 
+class HistoryTurn(BaseModel):
+    """One previous exchange, sent by the client so follow-ups can be resolved."""
+    question: str = Field(max_length=1000)
+    answer: str = Field(default="", max_length=4000)
+
+
 class QueryRequest(BaseModel):
     question: str = Field(min_length=1, max_length=1000)
+    history: list[HistoryTurn] = Field(default_factory=list, max_length=20)
 
 
 class SourceOut(BaseModel):
     chunk_index: int
     page: int | None = None
     preview: str
-    # Cosine distance, 0 = identical. The UI turns this into a relevance dial.
-    # Optional so an older client that ignores it still parses fine.
     distance: float | None = None
 
 
@@ -35,3 +40,11 @@ class QueryResponse(BaseModel):
     answer: str
     enough_info: bool
     sources: list[SourceOut]
+    resolved_question: str | None = None
+
+
+class LimitsOut(BaseModel):
+    """Lets the frontend read limits instead of hardcoding them in two places."""
+    max_upload_mb: int
+    max_pages: int
+    max_documents: int

@@ -1,8 +1,3 @@
-"""
-Run locally:  uvicorn main:app --reload
-Then open:    http://localhost:8000/docs
-"""
-
 import logging
 
 from fastapi import BackgroundTasks, Depends, FastAPI, Header, HTTPException, UploadFile
@@ -11,11 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import db
 import rag
 import schemas
-from config import ALLOWED_ORIGINS, MAX_DOCS_PER_SESSION
+from config import ALLOWED_ORIGINS, MAX_DOCS_PER_SESSION, MAX_PAGES, MAX_UPLOAD_MB
 
 logging.basicConfig(level=logging.INFO)
 
-app = FastAPI(title="Document Info Retriever", version="0.2.0")
+app = FastAPI(title="Document Info Retriever", version="0.3.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,11 +21,6 @@ app.add_middleware(
 
 
 def session_id(x_session_id: str = Header(alias="X-Session-Id")) -> str:
-    """
-    Every request must identify its session. Declaring it as a dependency means
-    FastAPI returns 422 automatically when the header is missing, so no route
-    has to check for it.
-    """
     if not x_session_id.strip():
         raise HTTPException(400, "X-Session-Id header cannot be empty")
     return x_session_id.strip()
@@ -38,9 +28,21 @@ def session_id(x_session_id: str = Header(alias="X-Session-Id")) -> str:
 
 @app.get("/health")
 def health():
-    """Cheap liveness check. Hosting pings this; so does the frontend, to
-    detect a cold start before making a real request."""
     return {"status": "ok"}
+
+
+@app.get("/limits", response_model=schemas.LimitsOut)
+def limits():
+    """
+    The frontend reads its validation thresholds from here rather than
+    hardcoding them. Change MAX_UPLOAD_MB on the server and the client's
+    "50 MB max" copy and its pre-flight check both follow, with no redeploy.
+    """
+    return schemas.LimitsOut(
+        max_upload_mb=MAX_UPLOAD_MB,
+        max_pages=MAX_PAGES,
+        max_documents=MAX_DOCS_PER_SESSION,
+    )
 
 
 # ------------------------------------------------------------------ upload
@@ -51,11 +53,9 @@ async def upload_document(
     session: str = Depends(session_id),
 ):
     """
-    202 Accepted, not 200 OK — the work hasn't happened yet.
-
-    Ingestion takes 30-60 seconds. Doing it inline would time out the browser,
-    so this returns an id immediately and the frontend polls GET /documents/{id}
-    until status flips to ready or failed.
+    202 Accepted, not 200 — the work hasn't happened yet. Ingestion takes
+    minutes for a large PDF, so this returns an id immediately and the frontend
+    polls GET /documents/{id}.
     """
     data = await file.read()
 
@@ -87,7 +87,6 @@ def list_documents(session: str = Depends(session_id)):
 
 @app.get("/documents/{document_id}", response_model=schemas.DocumentOut)
 def get_document(document_id: str, session: str = Depends(session_id)):
-    """What the frontend polls every 2 seconds while status is 'processing'."""
     with db.connect() as conn:
         doc = db.get_document(conn, document_id, session)
     if not doc:
@@ -122,7 +121,11 @@ def query_document(
             409, doc["error"] or "This document failed to process.")
 
     try:
-        return rag.answer_question(document_id, body.question.strip())
+        return rag.answer_question(
+            document_id,
+            body.question.strip(),
+            history=[t.model_dump() for t in body.history],
+        )
     except Exception as exc:
         logging.exception("query failed for document %s", document_id)
         raise HTTPException(502, f"Query failed: {type(exc).__name__}: {exc}")
