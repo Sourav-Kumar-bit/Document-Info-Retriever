@@ -1,0 +1,12 @@
+langchain
+langchain-google-genai
+langchain-community
+langchain-core
+python-dotenv
+pypdf
+python-docx
+langchain-text-splitters
+faiss-cpu
+pgvector
+psycopg
+pathlib
