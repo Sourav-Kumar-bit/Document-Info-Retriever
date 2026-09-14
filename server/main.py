@@ -15,7 +15,7 @@ from config import ALLOWED_ORIGINS, MAX_DOCS_PER_SESSION
 
 logging.basicConfig(level=logging.INFO)
 
-app = FastAPI(title="Document Info Retriever", version="0.1.0")
+app = FastAPI(title="Document Info Retriever", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,11 +27,9 @@ app.add_middleware(
 
 def session_id(x_session_id: str = Header(alias="X-Session-Id")) -> str:
     """
-    Every request must identify its session. Angular generates a UUID once,
-    keeps it in localStorage, and an HTTP interceptor attaches it to everything.
-
-    Declaring it as a dependency means FastAPI returns 422 automatically when
-    it's missing - no per-route checking.
+    Every request must identify its session. Declaring it as a dependency means
+    FastAPI returns 422 automatically when the header is missing, so no route
+    has to check for it.
     """
     if not x_session_id.strip():
         raise HTTPException(400, "X-Session-Id header cannot be empty")
@@ -40,8 +38,8 @@ def session_id(x_session_id: str = Header(alias="X-Session-Id")) -> str:
 
 @app.get("/health")
 def health():
-    """Cheap liveness check. Hosting platforms ping this; so will your frontend
-    to detect a cold start."""
+    """Cheap liveness check. Hosting pings this; so does the frontend, to
+    detect a cold start before making a real request."""
     return {"status": "ok"}
 
 
@@ -53,7 +51,7 @@ async def upload_document(
     session: str = Depends(session_id),
 ):
     """
-    202 Accepted, not 200 OK - the work hasn't happened yet.
+    202 Accepted, not 200 OK — the work hasn't happened yet.
 
     Ingestion takes 30-60 seconds. Doing it inline would time out the browser,
     so this returns an id immediately and the frontend polls GET /documents/{id}
@@ -69,8 +67,9 @@ async def upload_document(
     with db.connect() as conn:
         if db.count_documents(conn, session) >= MAX_DOCS_PER_SESSION:
             raise HTTPException(
-                429, f"Limit of {MAX_DOCS_PER_SESSION} documents reached. "
-                "Delete one before uploading another."
+                429,
+                f"Limit of {MAX_DOCS_PER_SESSION} documents reached. "
+                "Delete one before uploading another.",
             )
         doc_id = db.create_document(
             conn, session, file.filename or "untitled.pdf")
@@ -125,5 +124,5 @@ def query_document(
     try:
         return rag.answer_question(document_id, body.question.strip())
     except Exception as exc:
-        logging.exception("query failed")
-        raise HTTPException(502, f"The model service failed: {exc}")
+        logging.exception("query failed for document %s", document_id)
+        raise HTTPException(502, f"Query failed: {type(exc).__name__}: {exc}")

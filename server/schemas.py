@@ -26,6 +26,9 @@ class SourceOut(BaseModel):
     chunk_index: int
     page: int | None = None
     preview: str
+    # Cosine distance, 0 = identical. The UI turns this into a relevance dial.
+    # Optional so an older client that ignores it still parses fine.
+    distance: float | None = None
 
 
 class QueryResponse(BaseModel):

@@ -21,14 +21,14 @@ MIN_EXTRACTED_CHARS = 200             # below this, assume a scanned PDF
 
 
 class UploadRejected(Exception):
-    """Raised for a bad file. main.py turns this into a 4xx with the message."""
+    """A bad file, with a message that is safe to show the user."""
 
 
 # ------------------------------------------------------------- validation
 def validate_pdf(data: bytes, content_type: str | None) -> None:
     """
     Runs BEFORE the document row is created, so a rejected file leaves no trace.
-    Everything here returns a message the user can act on.
+    Every message here is something the user can act on.
     """
     if not data:
         raise UploadRejected("The file is empty.")
@@ -46,11 +46,11 @@ def validate_pdf(data: bytes, content_type: str | None) -> None:
 
 def read_pdf(data: bytes) -> list[Document]:
     """
-    Reads from bytes in memory - never touches disk. Deployed servers have an
+    Reads from bytes in memory — never touches disk. Deployed servers have an
     ephemeral filesystem, so anything written there disappears on restart.
 
-    Note: pages are 1-based here. PyPDFLoader used 0-based, so page numbers
-    will be one higher than in your Phase 2 data.
+    Pages are 1-based here. PyPDFLoader was 0-based, so page numbers are one
+    higher than in your Phase 2 data.
     """
     try:
         reader = PdfReader(io.BytesIO(data))
@@ -73,7 +73,7 @@ def read_pdf(data: bytes) -> list[Document]:
 
 # -------------------------------------------------------------- embedding
 def embed_all(texts: list[str], batch_size: int = 50) -> list[list[float]]:
-    """Batched with exponential backoff - the Gemini free tier rate-limits hard."""
+    """Batched with exponential backoff — the Gemini free tier rate-limits hard."""
     vectors: list[list[float]] = []
     for start in range(0, len(texts), batch_size):
         batch = texts[start:start + batch_size]
@@ -96,9 +96,9 @@ def ingest_bytes(document_id: str, data: bytes) -> None:
     """
     Runs in a background thread. Takes 30-60 seconds.
 
-    It must NEVER raise, because nobody is waiting to catch it. Every failure
-    path writes status='failed' with a message, which is what the frontend
-    polls for and shows the user.
+    It must NEVER raise — nobody is waiting to catch it. Every failure path
+    writes status='failed' with a message, which is what the frontend polls for
+    and shows the user.
     """
     conn = db.connect()
     try:
@@ -113,7 +113,7 @@ def ingest_bytes(document_id: str, data: bytes) -> None:
         if total_chars < MIN_EXTRACTED_CHARS:
             raise UploadRejected(
                 "Almost no text could be extracted. This looks like a scanned "
-                "document - only PDFs with a text layer are supported."
+                "document — only PDFs with a text layer are supported."
             )
 
         vectors = embed_all([c.page_content for c in chunks])
@@ -179,9 +179,12 @@ def answer_question(document_id: str, question: str, k: int = 5) -> dict:
     })
 
     sources = [
-        {"chunk_index": i,
-         "page": results[i]["page"],
-         "preview": " ".join(results[i]["content"].split())[:200]}
+        {
+            "chunk_index": results[i]["chunk_index"],
+            "page": results[i]["page"],
+            "preview": " ".join(results[i]["content"].split())[:200],
+            "distance": results[i]["distance"],
+        }
         for i in result.sources
         if 0 <= i < len(results)
     ]
