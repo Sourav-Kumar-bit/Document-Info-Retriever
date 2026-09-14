@@ -1,0 +1,105 @@
+<section class="glass panel">
+  <header class="panel-head">
+    <p class="eyebrow">Session</p>
+    <h2>What you've covered</h2>
+  </header>
+
+  <!-- Three headline counters. -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-value mono">{{ store.turns().length }}</span>
+      <span class="stat-label">asked</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value mono ok">{{ store.answeredCount() }}</span>
+      <span class="stat-label">answered</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value mono warn">{{ store.unansweredCount() }}</span>
+      <span class="stat-label">not covered</span>
+    </div>
+  </div>
+
+  @if (!store.active()) {
+    <p class="muted">Select a document to see its coverage.</p>
+  } @else {
+    <!-- CHART 1 — page coverage. Ghost bars are pages nothing has cited yet,
+         so the empty space is the actual message. -->
+    <div class="block">
+      <div class="block-head">
+        <h3>Page coverage</h3>
+        <span class="mono figure">{{ coveragePct() }}%</span>
+      </div>
+
+      @if (bars().length === 0) {
+        <p class="muted small">Ask a question to start mapping the document.</p>
+      } @else {
+        <div class="bars" role="img" [attr.aria-label]="coveragePct() + '% of pages cited so far'">
+          @for (bar of bars(); track bar.page) {
+            <span
+              class="bar"
+              [class.hit]="bar.count > 0"
+              [style.height.px]="bar.height"
+              [attr.title]="'Page ' + bar.page + ' · cited ' + bar.count + '×'"
+            ></span>
+          }
+        </div>
+        <div class="axis mono">
+          <span>p1</span>
+          <span>p{{ store.active()!.page_count }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- CHART 2 — retrieval confidence trend. -->
+    <div class="block">
+      <div class="block-head">
+        <h3>Retrieval confidence</h3>
+        @if (avgRelevance(); as avg) {
+          <span class="mono figure">{{ avg }}% avg</span>
+        }
+      </div>
+
+      @if (!trendPath()) {
+        <p class="muted small">
+          Needs at least two answers. Shows how closely retrieved passages matched
+          each question.
+        </p>
+      } @else {
+        <svg class="spark" viewBox="0 0 240 56" preserveAspectRatio="none" role="img"
+             [attr.aria-label]="'Average relevance ' + avgRelevance() + ' percent'">
+          <defs>
+            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--brand)" stop-opacity="0.34" />
+              <stop offset="100%" stop-color="var(--brand)" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <polygon [attr.points]="trendArea()" fill="url(#sparkFill)" />
+          <polyline
+            [attr.points]="trendPath()"
+            fill="none"
+            stroke="var(--brand)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      }
+    </div>
+
+    <!-- CHART 3 — the index itself, as a donut. -->
+    <div class="block ring-block">
+      <svg class="ring" viewBox="0 0 80 80" role="img"
+           [attr.aria-label]="coveragePct() + ' percent of pages visited'">
+        <circle class="ring-track" cx="40" cy="40" r="34" />
+        <circle class="ring-value" cx="40" cy="40" r="34"
+                [attr.stroke-dasharray]="ringDash(coveragePct())" />
+      </svg>
+      <div class="ring-legend">
+        <p><strong class="mono">{{ store.active()!.chunk_count }}</strong> chunks indexed</p>
+        <p><strong class="mono">{{ store.active()!.page_count }}</strong> pages total</p>
+        <p class="muted small">{{ store.pageCoverage().touched }} pages cited so far</p>
+      </div>
+    </div>
+  }
+</section>

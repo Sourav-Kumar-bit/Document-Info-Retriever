@@ -1,0 +1,60 @@
+<section
+  class="glass drop"
+  appTilt="4"
+  [class.is-dragging]="dragging()"
+  [class.is-busy]="phase() === 'uploading' || phase() === 'queued'"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  <!-- The 3D page stack. Five sheets in real perspective; it fills up as the
+       upload progresses, so the object itself is the progress indicator. -->
+  <div class="stack" aria-hidden="true" [style.--fill]="percent() / 100">
+    @for (sheet of sheets; track sheet) {
+      <div class="sheet" [style.--i]="sheet"></div>
+    }
+    <div class="stack-glow"></div>
+  </div>
+
+  <div class="drop-copy">
+    <p class="eyebrow">Step one</p>
+    <h2>Add a document</h2>
+
+    @switch (phase()) {
+      @case ('uploading') {
+        <p class="status">Uploading {{ fileName() }}</p>
+        <div class="bar" role="progressbar" [attr.aria-valuenow]="percent()" aria-valuemin="0" aria-valuemax="100">
+          <span [style.width.%]="percent()"></span>
+        </div>
+        <p class="mono figure">{{ percent() }}%</p>
+      }
+      @case ('queued') {
+        <p class="status ok">Indexing started</p>
+        <p class="hint">
+          Reading pages and building the index. Takes about a minute — you can watch
+          it in the library below.
+        </p>
+      }
+      @case ('rejected') {
+        <p class="status bad">{{ message() }}</p>
+        <button type="button" class="btn" (click)="dismiss()">Try another file</button>
+      }
+      @default {
+        <p class="hint">
+          Drop a PDF here, or
+          <button type="button" class="link" (click)="browse()">choose a file</button>.
+          Text-layer PDFs only — scans need OCR first.
+        </p>
+        <p class="limits mono">PDF · max 10 MB · {{ store.documents().length }}/5 used</p>
+      }
+    }
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept="application/pdf,.pdf"
+    class="sr-only"
+    (change)="onPicked($event)"
+  />
+</section>

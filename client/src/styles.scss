@@ -1,1 +1,318 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===========================================================================
+   Document Info Retriever — design tokens
+   Glassmorphism: translucent layers over a living aurora field.
+   Blue = the system speaking. Amber = the document speaking (highlighter).
+   =========================================================================== */
+
+/* ---------------------------------------------------------------- palette */
+:root {
+  /* brand — fixed across both themes */
+  --brand: #1856ff;
+  --brand-lift: #4d7dff;
+  --brand-deep: #0b34a8;
+
+  /* amber is reserved for cited source material. Never use it for chrome. */
+  --cite: #e89558;
+  --cite-lift: #f5b47f;
+
+  --ok: #07ca6b;
+  --warn: #e89558;
+  --bad: #ea2143;
+
+  /* type */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
+
+  /* type scale — mobile-first, compact */
+  --t-display: clamp(2rem, 1.4rem + 3vw, 3.5rem);
+  --t-h1: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem);
+  --t-h2: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  --t-body: 0.9375rem;
+  --t-small: 0.8125rem;
+  --t-micro: 0.6875rem;
+
+  /* spacing — comfortable density */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-pill: 999px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.4s;
+}
+
+/* ------------------------------------------------------------ light theme */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #eaeefa;
+  --bg-2: #dce4f6;
+  --aurora-1: rgba(24, 86, 255, 0.34);
+  --aurora-2: rgba(232, 149, 88, 0.26);
+  --aurora-3: rgba(122, 92, 255, 0.28);
+
+  --glass: rgba(255, 255, 255, 0.62);
+  --glass-solid: rgba(255, 255, 255, 0.86);
+  --glass-edge: rgba(255, 255, 255, 0.9);
+  --glass-edge-soft: rgba(255, 255, 255, 0.5);
+  --hairline: rgba(20, 20, 20, 0.1);
+
+  --ink: #101322;
+  --ink-2: #48526b;
+  --ink-3: #6d7790;
+
+  --shadow-lo: 0 1px 2px rgba(16, 19, 34, 0.06);
+  --shadow-md:
+    0 2px 8px rgba(16, 19, 34, 0.06), 0 12px 28px -12px rgba(16, 19, 34, 0.18);
+  --shadow-hi:
+    0 4px 12px rgba(16, 19, 34, 0.08), 0 28px 60px -20px rgba(16, 19, 34, 0.28);
+  --sheen: rgba(255, 255, 255, 0.75);
+}
+
+/* ------------------------------------------------------------- dark theme */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #060914;
+  --bg-2: #0b1020;
+  --aurora-1: rgba(24, 86, 255, 0.4);
+  --aurora-2: rgba(232, 149, 88, 0.2);
+  --aurora-3: rgba(122, 92, 255, 0.32);
+
+  --glass: rgba(255, 255, 255, 0.055);
+  --glass-solid: rgba(18, 24, 44, 0.82);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-edge-soft: rgba(255, 255, 255, 0.07);
+  --hairline: rgba(255, 255, 255, 0.09);
+
+  --ink: #f0f3fa;
+  --ink-2: #a7b2c8;
+  --ink-3: #78849c;
+
+  --shadow-lo: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.36), 0 14px 32px -14px rgba(0, 0, 0, 0.7);
+  --shadow-hi: 0 4px 14px rgba(0, 0, 0, 0.4), 0 34px 70px -24px rgba(0, 0, 0, 0.85);
+  --sheen: rgba(255, 255, 255, 0.16);
+}
+
+/* ------------------------------------------------------------------ reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Keyboard-first: a focus ring that survives every glass background. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--cite) 40%, transparent);
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------- aurora canvas */
+/* Three slow-drifting blobs. This is the ONLY thing the glass has to refract;
+   without something moving underneath, backdrop-filter has nothing to do. */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 50% 0%, var(--bg-2), var(--bg) 60%);
+}
+
+.aurora span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+.aurora span:nth-child(1) {
+  width: 46vmax;
+  height: 46vmax;
+  left: -12vmax;
+  top: -14vmax;
+  background: var(--aurora-1);
+  animation: drift-a 26s var(--ease) infinite alternate;
+}
+
+.aurora span:nth-child(2) {
+  width: 38vmax;
+  height: 38vmax;
+  right: -10vmax;
+  top: 18vmax;
+  background: var(--aurora-2);
+  animation: drift-b 32s var(--ease) infinite alternate;
+}
+
+.aurora span:nth-child(3) {
+  width: 42vmax;
+  height: 42vmax;
+  left: 28vmax;
+  bottom: -20vmax;
+  background: var(--aurora-3);
+  animation: drift-c 29s var(--ease) infinite alternate;
+}
+
+@keyframes drift-a {
+  to {
+    transform: translate3d(14vmax, 8vmax, 0) scale(1.15);
+  }
+}
+@keyframes drift-b {
+  to {
+    transform: translate3d(-16vmax, 12vmax, 0) scale(0.88);
+  }
+}
+@keyframes drift-c {
+  to {
+    transform: translate3d(10vmax, -14vmax, 0) scale(1.1);
+  }
+}
+
+/* ---------------------------------------------------------------- glass */
+.glass {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* The top-edge sheen. This single line is what separates convincing glass
+   from a grey box with blur on it — real glass catches light on its rim. */
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, var(--sheen), transparent 42%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- 3D tilt */
+/* Driven by the tilt directive, which writes --rx / --ry from pointer position.
+   Defaults to 0 so the class is inert without the directive. */
+.tilt {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease);
+}
+
+.tilt:hover {
+  transition: transform 0.08s linear;
+}
+
+/* --------------------------------------------------------------- utility */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--t-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------- scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-edge) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--glass-edge);
+  border-radius: var(--r-pill);
+}
+
+/* -------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .aurora span {
+    animation: none;
+  }
+}

@@ -1,0 +1,222 @@
+:host {
+  display: block;
+}
+
+.panel {
+  padding: var(--s-5);
+}
+
+.panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+
+.panel-head h2 {
+  font-size: var(--t-h2);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: var(--s-1);
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--glass-edge-soft);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  color: var(--brand);
+}
+
+.icon-btn.del:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  color: var(--bad);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------------- list */
+.docs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.docs li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.doc {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  background: color-mix(in srgb, var(--glass-edge-soft) 60%, transparent);
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+  transition:
+    background 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    transform 0.2s var(--ease);
+}
+
+.doc:hover:not(:disabled) {
+  transform: translateX(3px);
+  border-color: var(--glass-edge);
+}
+
+/* The active document gets a solid left rule — a spine, like a book on a shelf. */
+.doc.active {
+  background: color-mix(in srgb, var(--brand) 14%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.doc.unavailable {
+  cursor: default;
+  opacity: 0.75;
+}
+
+.doc-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.doc-name {
+  font-weight: 600;
+  font-size: var(--t-small);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-meta {
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+}
+
+/* --------------------------------------------------------------- chips */
+.chip {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chip[data-status='ready'] {
+  background: color-mix(in srgb, var(--ok) 20%, transparent);
+  color: var(--ok);
+}
+
+.chip[data-status='processing'] {
+  background: color-mix(in srgb, var(--brand) 20%, transparent);
+  color: var(--brand);
+}
+
+.chip[data-status='failed'] {
+  background: color-mix(in srgb, var(--bad) 20%, transparent);
+  color: var(--bad);
+}
+
+.spin {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --------------------------------------------------------------- empty */
+.empty {
+  text-align: center;
+  padding: var(--s-6) var(--s-3);
+  color: var(--ink-2);
+}
+
+.empty-mark {
+  width: 52px;
+  height: 64px;
+  margin: 0 auto var(--s-4);
+  border-radius: 5px;
+  border: 2px dashed var(--glass-edge);
+  transform: perspective(400px) rotateY(-16deg);
+}
+
+.empty .hint {
+  font-size: var(--t-small);
+  color: var(--ink-3);
+  margin-top: var(--s-1);
+}
+
+.note {
+  padding: var(--s-3);
+  border-radius: var(--r-sm);
+  font-size: var(--t-small);
+  margin-bottom: var(--s-3);
+}
+
+.note.bad {
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  color: var(--bad);
+}
+
+/* ------------------------------------------------------------ skeleton */
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.skeleton {
+  height: 56px;
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    90deg,
+    var(--glass-edge-soft) 25%,
+    var(--glass-edge) 50%,
+    var(--glass-edge-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

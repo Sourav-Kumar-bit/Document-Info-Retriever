@@ -1,0 +1,177 @@
+:host {
+  display: block;
+}
+
+.panel {
+  padding: var(--s-5);
+}
+
+.panel-head {
+  margin-bottom: var(--s-4);
+}
+
+.panel-head h2 {
+  font-size: var(--t-h2);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: var(--s-1);
+}
+
+/* ------------------------------------------------------------- counters */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--s-3) var(--s-1);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--glass-edge-soft) 70%, transparent);
+  border: 1px solid var(--glass-edge-soft);
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-value.ok {
+  color: var(--ok);
+}
+.stat-value.warn {
+  color: var(--warn);
+}
+
+.stat-label {
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-top: var(--s-1);
+}
+
+/* --------------------------------------------------------------- blocks */
+.block + .block {
+  margin-top: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--hairline);
+}
+
+.block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--s-3);
+}
+
+.block-head h3 {
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.figure {
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.muted {
+  color: var(--ink-3);
+}
+
+.small {
+  font-size: var(--t-small);
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------- chart 1: page bars */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 92px;
+  padding: var(--s-2) 0;
+}
+
+.bar {
+  flex: 1;
+  min-width: 2px;
+  border-radius: 2px 2px 0 0;
+  /* Ghost bars: the page exists but nothing has cited it. */
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  transition:
+    height 0.5s var(--ease),
+    background 0.3s var(--ease);
+}
+
+/* Cited pages use the amber highlighter colour, same as the citation fan. */
+.bar.hit {
+  background: linear-gradient(to top, var(--cite), var(--cite-lift));
+  box-shadow: 0 0 10px -2px var(--cite);
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------- chart 2: trend sparkline */
+.spark {
+  width: 100%;
+  height: 56px;
+  display: block;
+  overflow: visible;
+}
+
+/* --------------------------------------------------- chart 3: index ring */
+.ring-block {
+  display: flex;
+  align-items: center;
+  gap: var(--s-5);
+}
+
+.ring {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.ring-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 12%, transparent);
+  stroke-width: 8;
+}
+
+.ring-value {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.7s var(--ease);
+}
+
+.ring-legend p {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+}
+
+.ring-legend strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .ring-block {
+    gap: var(--s-4);
+  }
+}

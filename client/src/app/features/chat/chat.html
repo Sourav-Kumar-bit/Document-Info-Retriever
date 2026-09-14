@@ -1,0 +1,139 @@
+<section class="glass chat">
+  <header class="chat-head">
+    <div class="chat-title">
+      <p class="eyebrow">Ask</p>
+      <h2>
+        @if (store.active(); as doc) {
+          {{ doc.filename }}
+        } @else {
+          No document selected
+        }
+      </h2>
+    </div>
+
+    @if (store.turns().length > 0) {
+      <button type="button" class="ghost-btn" (click)="store.clearChat()">Clear</button>
+    }
+  </header>
+
+  <div class="scroller" #scroller>
+    @if (!store.active()) {
+      <div class="gate">
+        <p>Pick a document from the library to start asking questions.</p>
+      </div>
+    } @else if (store.active()!.status !== 'ready') {
+      <div class="gate">
+        <p>This document is still being indexed. Questions unlock when it's ready.</p>
+      </div>
+    } @else if (store.turns().length === 0) {
+      <div class="gate">
+        <p class="gate-lead">Every answer cites the page it came from.</p>
+        <div class="chips">
+          @for (s of suggestions; track s) {
+            <button type="button" class="chip-btn" (click)="useSuggestion(s)">{{ s }}</button>
+          }
+        </div>
+      </div>
+    } @else {
+      @for (turn of store.turns(); track turn.id) {
+        <article class="turn">
+          <p class="question">{{ turn.question }}</p>
+
+          @if (turn.pending) {
+            <div class="thinking" role="status">
+              <span></span><span></span><span></span>
+              <em>Searching the document</em>
+            </div>
+          } @else if (turn.error) {
+            <div class="answer failed">
+              <p>{{ turn.error }}</p>
+              <button type="button" class="ghost-btn" (click)="store.retry(turn.id)">Try again</button>
+            </div>
+          } @else if (turn.response && !turn.response.enough_info) {
+            <!-- Not an error. The guardrail working is a legitimate outcome. -->
+            <div class="answer empty-answer">
+              <p>This document doesn't cover that.</p>
+              <p class="sub">Nothing retrieved was close enough to answer from. Try different wording, or a narrower question.</p>
+            </div>
+          } @else if (turn.response; as response) {
+            <div class="answer">
+              <p class="prose">{{ response.answer }}</p>
+
+              @if (response.sources.length > 0) {
+                <!-- SIGNATURE: sources fan out as physical pages in perspective.
+                     Click one to lift it out and read the excerpt. -->
+                <p class="eyebrow cite-label">Cited from</p>
+                <div class="fan">
+                  @for (source of response.sources; track source.chunk_index; let i = $index) {
+                    <button
+                      type="button"
+                      class="page"
+                      [class.open]="openSource() === turn.id + '-' + i"
+                      [style.--i]="i"
+                      (click)="toggleSource(turn.id + '-' + i)"
+                      [attr.aria-expanded]="openSource() === turn.id + '-' + i"
+                    >
+                      <span class="page-no mono">p{{ source.page ?? '?' }}</span>
+
+                      @if (relevance(source); as score) {
+                        <svg class="dial" viewBox="0 0 40 40" aria-hidden="true">
+                          <circle class="dial-track" cx="20" cy="20" r="16" />
+                          <circle
+                            class="dial-value"
+                            [attr.data-verdict]="verdict(score)"
+                            cx="20"
+                            cy="20"
+                            r="16"
+                            [attr.stroke-dasharray]="dash(score)"
+                          />
+                        </svg>
+                        <span class="sr-only">{{ score }}% relevance</span>
+                      }
+                    </button>
+                  }
+                </div>
+
+                @for (source of response.sources; track source.chunk_index; let i = $index) {
+                  @if (openSource() === turn.id + '-' + i) {
+                    <blockquote class="excerpt">
+                      <span class="excerpt-meta mono">
+                        page {{ source.page ?? '?' }} · chunk {{ source.chunk_index }}
+                        @if (relevance(source); as score) {
+                          · {{ score }}% match
+                        }
+                      </span>
+                      {{ source.preview }}…
+                    </blockquote>
+                  }
+                }
+              }
+            </div>
+          }
+        </article>
+      }
+    }
+  </div>
+
+  <div class="composer">
+    <textarea
+      rows="1"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (keydown)="onKeydown($event)"
+      [disabled]="!store.canAsk()"
+      placeholder="Ask something about this document…"
+      aria-label="Your question"
+    ></textarea>
+    <button
+      type="button"
+      class="send"
+      [disabled]="!store.canAsk() || draft().trim().length === 0"
+      (click)="send()"
+      aria-label="Send question"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
+</section>

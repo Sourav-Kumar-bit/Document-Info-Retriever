@@ -1,0 +1,270 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  padding: var(--s-4);
+  max-width: 1500px;
+  margin-inline: auto;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  padding: var(--s-2) var(--s-4);
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--r-sm);
+  z-index: 100;
+}
+
+.skip:focus {
+  left: var(--s-4);
+  top: var(--s-4);
+}
+
+/* -------------------------------------------------------------- topbar */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  margin-bottom: var(--s-6);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--shadow-lo);
+  position: sticky;
+  top: var(--s-3);
+  z-index: 50;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.mark {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  color: var(--brand);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.brand-name {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  font-size: var(--t-small);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-sub {
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  font-size: var(--t-micro);
+  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  color: var(--brand);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: blink 1.4s var(--ease) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.session {
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--r-sm);
+  background: var(--glass-edge-soft);
+}
+
+/* --------------------------------------------------------- theme toggle */
+.theme-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.theme-track {
+  display: block;
+  width: 52px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  border: 1px solid var(--glass-edge);
+  position: relative;
+}
+
+.theme-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(140deg, var(--brand-lift), var(--brand));
+  box-shadow: 0 2px 8px -2px var(--brand);
+  transition: transform 0.38s var(--ease);
+}
+
+.theme-knob.is-light {
+  transform: translateX(24px);
+  background: linear-gradient(140deg, var(--cite-lift), var(--cite));
+  box-shadow: 0 2px 8px -2px var(--cite);
+}
+
+/* ----------------------------------------------------------------- hero */
+.hero {
+  padding: var(--s-6) var(--s-4) var(--s-7);
+  max-width: 56rem;
+}
+
+.hero h1 {
+  font-size: var(--t-display);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* The one phrase that gets the highlighter treatment — same amber as the
+   citation fan, so the colour has a single consistent meaning everywhere. */
+.hero-cite {
+  position: relative;
+  display: inline-block;
+  color: var(--cite);
+}
+
+.hero-cite::after {
+  content: '';
+  position: absolute;
+  left: -0.1em;
+  right: -0.1em;
+  bottom: 0.08em;
+  height: 0.36em;
+  background: color-mix(in srgb, var(--cite) 26%, transparent);
+  border-radius: 3px;
+  z-index: -1;
+  transform: rotate(-0.6deg);
+}
+
+.hero-sub {
+  margin-top: var(--s-5);
+  max-width: 46ch;
+  color: var(--ink-2);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+/* ------------------------------------------------------------ workspace */
+/* Bento: a library rail that scrolls, and a chat column that doesn't. */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(320px, 400px) 1fr;
+  gap: var(--s-4);
+  align-items: start;
+}
+
+.col-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  position: sticky;
+  top: 84px;
+}
+
+.col-right {
+  height: calc(100dvh - 120px);
+  min-height: 560px;
+}
+
+.foot {
+  padding: var(--s-6) var(--s-4) var(--s-4);
+  text-align: center;
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------- responsive */
+@media (max-width: 1080px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .col-left {
+    position: static;
+  }
+
+  .col-right {
+    height: auto;
+    min-height: 70dvh;
+  }
+}
+
+@media (max-width: 640px) {
+  :host {
+    padding: var(--s-2);
+  }
+
+  .topbar {
+    border-radius: var(--r-lg);
+    padding: var(--s-2) var(--s-3);
+  }
+
+  .brand-sub,
+  .session {
+    display: none;
+  }
+
+  .hero {
+    padding: var(--s-5) var(--s-2) var(--s-6);
+  }
+
+  .hero-sub {
+    font-size: var(--t-body);
+  }
+}

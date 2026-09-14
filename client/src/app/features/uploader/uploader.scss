@@ -1,0 +1,179 @@
+:host {
+  display: block;
+}
+
+.drop {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-5);
+  align-items: center;
+  padding: var(--s-5);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform 0.08s linear;
+}
+
+.drop.is-dragging {
+  border-color: var(--brand);
+  box-shadow:
+    var(--shadow-hi),
+    0 0 0 4px color-mix(in srgb, var(--brand) 22%, transparent);
+}
+
+/* ------------------------------------------------------------- 3D stack */
+.stack {
+  --fill: 0;
+  position: relative;
+  width: 108px;
+  height: 128px;
+  transform-style: preserve-3d;
+  transform: rotateX(58deg) rotateZ(-34deg);
+  flex-shrink: 0;
+}
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--glass-solid) 92%, var(--brand) 8%),
+    var(--glass-solid)
+  );
+  border: 1px solid var(--glass-edge);
+  box-shadow: 0 1px 0 var(--hairline);
+  /* Each sheet floats higher than the last. The whole stack lifts as --fill
+     grows, so upload progress is expressed as physical height. */
+  transform: translateZ(calc((var(--i) * 7px) + (var(--fill) * var(--i) * 9px)));
+  transition: transform 0.5s var(--ease);
+}
+
+/* The topmost sheet carries ruled lines — it reads as a page, not a slab. */
+.sheet:last-of-type {
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 11px,
+      color-mix(in srgb, var(--ink) 12%, transparent) 11px 12px
+    ),
+    linear-gradient(135deg, color-mix(in srgb, var(--brand) 10%, transparent), transparent);
+  background-position: 12px 22px;
+  background-size:
+    calc(100% - 24px) calc(100% - 40px),
+    100% 100%;
+  background-repeat: no-repeat;
+}
+
+.stack-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--brand) 40%, transparent), transparent 68%);
+  filter: blur(22px);
+  transform: translateZ(-14px);
+  opacity: calc(0.25 + var(--fill) * 0.55);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.is-busy .stack {
+  animation: hover-stack 2.6s var(--ease) infinite alternate;
+}
+
+@keyframes hover-stack {
+  to {
+    transform: rotateX(58deg) rotateZ(-20deg);
+  }
+}
+
+/* ---------------------------------------------------------------- copy */
+.drop-copy h2 {
+  font-size: var(--t-h2);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: var(--s-1) 0 var(--s-2);
+}
+
+.hint {
+  color: var(--ink-2);
+  font-size: var(--t-small);
+  max-width: 46ch;
+}
+
+.limits {
+  margin-top: var(--s-3);
+  font-size: var(--t-micro);
+  color: var(--ink-3);
+}
+
+.status {
+  font-weight: 600;
+  margin-bottom: var(--s-2);
+}
+.status.ok {
+  color: var(--ok);
+}
+.status.bad {
+  color: var(--bad);
+}
+
+.figure {
+  font-size: var(--t-small);
+  color: var(--ink-2);
+  margin-top: var(--s-2);
+}
+
+.bar {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--brand), var(--brand-lift));
+  transition: width 0.2s linear;
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--brand);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn {
+  margin-top: var(--s-3);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--glass-edge);
+  background: var(--glass);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--t-small);
+}
+
+.btn:hover {
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+}
+
+/* --------------------------------------------------------------- mobile */
+@media (max-width: 640px) {
+  .drop {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .stack {
+    width: 84px;
+    height: 100px;
+  }
+}
