@@ -1,0 +1,12 @@
+{
+  "name": "document-info-retriever",
+  "compatibility_date": "2026-09-14",
+  "assets": {
+    // Relative to this file, which lives in client/
+    "directory": "./dist/document-info-retriever/browser",
+    // Serves index.html for any unmatched path — this is the SPA fallback,
+    // and it replaces the _redirects file entirely.
+    "not_found_handling": "single-page-application"
+  },
+  "observability": { "enabled": true }
+}
