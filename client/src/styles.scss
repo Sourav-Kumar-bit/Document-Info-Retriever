@@ -1,107 +1,122 @@
 /* ===========================================================================
    Document Info Retriever — design tokens
-   Glassmorphism: translucent layers over a living aurora field.
-   Blue = the system speaking. Amber = the document speaking (highlighter).
+
+   Three hues, each with one job:
+     brand blue  — the system speaking (chrome, actions, confidence)
+     iris violet — depth and gradient partner to blue, never used alone
+     cite amber  — the DOCUMENT speaking. Citations only. A highlighter pen.
    =========================================================================== */
 
-/* ---------------------------------------------------------------- palette */
 :root {
-  /* brand — fixed across both themes */
+  /* ---- brand (theme-independent) */
   --brand: #1856ff;
-  --brand-lift: #4d7dff;
-  --brand-deep: #0b34a8;
+  --brand-lift: #5b86ff;
+  --brand-deep: #0a2fa8;
+  --iris: #7c5cff;
+  --iris-lift: #a68bff;
 
-  /* amber is reserved for cited source material. Never use it for chrome. */
   --cite: #e89558;
-  --cite-lift: #f5b47f;
+  --cite-lift: #ffc08a;
+  --cite-deep: #c46f2e;
 
   --ok: #07ca6b;
   --warn: #e89558;
   --bad: #ea2143;
 
-  /* type */
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
+  --grad-brand: linear-gradient(135deg, var(--brand-lift), var(--brand) 45%, var(--iris));
+  --grad-cite: linear-gradient(135deg, var(--cite-lift), var(--cite));
 
-  /* type scale — mobile-first, compact */
-  --t-display: clamp(2rem, 1.4rem + 3vw, 3.5rem);
-  --t-h1: clamp(1.5rem, 1.2rem + 1.4vw, 2.125rem);
-  --t-h2: clamp(1.125rem, 1rem + 0.6vw, 1.375rem);
+  /* ---- type */
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  --t-display: clamp(1.9rem, 1.1rem + 2.6vw, 3.25rem);
+  --t-h1: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+  --t-h2: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
   --t-body: 0.9375rem;
   --t-small: 0.8125rem;
   --t-micro: 0.6875rem;
 
-  /* spacing — comfortable density */
+  /* ---- space */
   --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
   --s-4: 1rem;
   --s-5: 1.5rem;
   --s-6: 2rem;
-  --s-7: 3rem;
 
   --r-sm: 10px;
-  --r-md: 16px;
-  --r-lg: 24px;
+  --r-md: 14px;
+  --r-lg: 20px;
   --r-pill: 999px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur: 0.4s;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur: 0.38s;
+
+  --rail: 316px;
+  --topbar-h: 62px;
 }
 
 /* ------------------------------------------------------------ light theme */
 :root,
 :root[data-theme='light'] {
   color-scheme: light;
+  --bg: #e6ebf8;
+  --bg-2: #f3f6fd;
+  --mesh-1: rgba(24, 86, 255, 0.4);
+  --mesh-2: rgba(232, 149, 88, 0.3);
+  --mesh-3: rgba(124, 92, 255, 0.34);
+  --mesh-4: rgba(7, 202, 107, 0.16);
 
-  --bg: #eaeefa;
-  --bg-2: #dce4f6;
-  --aurora-1: rgba(24, 86, 255, 0.34);
-  --aurora-2: rgba(232, 149, 88, 0.26);
-  --aurora-3: rgba(122, 92, 255, 0.28);
+  --glass: rgba(255, 255, 255, 0.66);
+  --glass-2: rgba(255, 255, 255, 0.42);
+  --glass-solid: rgba(255, 255, 255, 0.9);
+  --edge: rgba(255, 255, 255, 0.92);
+  --edge-soft: rgba(255, 255, 255, 0.52);
+  --hairline: rgba(16, 19, 34, 0.09);
+  --well: rgba(16, 19, 34, 0.045);
 
-  --glass: rgba(255, 255, 255, 0.62);
-  --glass-solid: rgba(255, 255, 255, 0.86);
-  --glass-edge: rgba(255, 255, 255, 0.9);
-  --glass-edge-soft: rgba(255, 255, 255, 0.5);
-  --hairline: rgba(20, 20, 20, 0.1);
+  --ink: #0d1020;
+  --ink-2: #434d66;
+  --ink-3: #6b7691;
 
-  --ink: #101322;
-  --ink-2: #48526b;
-  --ink-3: #6d7790;
+  --sheen: rgba(255, 255, 255, 0.9);
+  --grain: 0.035;
 
-  --shadow-lo: 0 1px 2px rgba(16, 19, 34, 0.06);
-  --shadow-md:
-    0 2px 8px rgba(16, 19, 34, 0.06), 0 12px 28px -12px rgba(16, 19, 34, 0.18);
-  --shadow-hi:
-    0 4px 12px rgba(16, 19, 34, 0.08), 0 28px 60px -20px rgba(16, 19, 34, 0.28);
-  --sheen: rgba(255, 255, 255, 0.75);
+  --sh-1: 0 1px 2px rgba(13, 16, 32, 0.06);
+  --sh-2: 0 2px 8px rgba(13, 16, 32, 0.06), 0 14px 30px -14px rgba(13, 16, 32, 0.2);
+  --sh-3: 0 4px 14px rgba(13, 16, 32, 0.08), 0 30px 60px -22px rgba(13, 16, 32, 0.3);
 }
 
 /* ------------------------------------------------------------- dark theme */
 :root[data-theme='dark'] {
   color-scheme: dark;
+  --bg: #05070f;
+  --bg-2: #0c1226;
+  --mesh-1: rgba(24, 86, 255, 0.46);
+  --mesh-2: rgba(232, 149, 88, 0.24);
+  --mesh-3: rgba(124, 92, 255, 0.4);
+  --mesh-4: rgba(7, 202, 107, 0.14);
 
-  --bg: #060914;
-  --bg-2: #0b1020;
-  --aurora-1: rgba(24, 86, 255, 0.4);
-  --aurora-2: rgba(232, 149, 88, 0.2);
-  --aurora-3: rgba(122, 92, 255, 0.32);
+  --glass: rgba(255, 255, 255, 0.058);
+  --glass-2: rgba(255, 255, 255, 0.03);
+  --glass-solid: rgba(16, 22, 42, 0.88);
+  --edge: rgba(255, 255, 255, 0.13);
+  --edge-soft: rgba(255, 255, 255, 0.06);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --well: rgba(255, 255, 255, 0.04);
 
-  --glass: rgba(255, 255, 255, 0.055);
-  --glass-solid: rgba(18, 24, 44, 0.82);
-  --glass-edge: rgba(255, 255, 255, 0.14);
-  --glass-edge-soft: rgba(255, 255, 255, 0.07);
-  --hairline: rgba(255, 255, 255, 0.09);
+  --ink: #eef2fb;
+  --ink-2: #a3afc7;
+  --ink-3: #737f9a;
 
-  --ink: #f0f3fa;
-  --ink-2: #a7b2c8;
-  --ink-3: #78849c;
+  --sheen: rgba(255, 255, 255, 0.18);
+  --grain: 0.05;
 
-  --shadow-lo: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.36), 0 14px 32px -14px rgba(0, 0, 0, 0.7);
-  --shadow-hi: 0 4px 14px rgba(0, 0, 0, 0.4), 0 34px 70px -24px rgba(0, 0, 0, 0.85);
-  --sheen: rgba(255, 255, 255, 0.16);
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --sh-2: 0 2px 8px rgba(0, 0, 0, 0.4), 0 16px 34px -16px rgba(0, 0, 0, 0.75);
+  --sh-3: 0 4px 16px rgba(0, 0, 0, 0.45), 0 36px 72px -26px rgba(0, 0, 0, 0.9);
 }
 
 /* ------------------------------------------------------------------ reset */
@@ -122,19 +137,19 @@ body {
   font-size: var(--t-body);
   line-height: 1.55;
   color: var(--ink);
+  /* Painted on <body> too, so there is never a seam if a layer is shorter
+     than the document. The previous build showed a hard edge here. */
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  transition:
-    background var(--dur) var(--ease),
-    color var(--dur) var(--ease);
+  overflow: hidden; /* the app shell owns scrolling, not the page */
 }
 
 h1,
 h2,
 h3,
-p {
+p,
+figure {
   margin: 0;
 }
 
@@ -143,110 +158,141 @@ button {
   color: inherit;
 }
 
-/* Keyboard-first: a focus ring that survives every glass background. */
 :focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--cite) 40%, transparent);
-  color: var(--ink);
+  background: color-mix(in srgb, var(--cite) 45%, transparent);
 }
 
-/* --------------------------------------------------------- aurora canvas */
-/* Three slow-drifting blobs. This is the ONLY thing the glass has to refract;
-   without something moving underneath, backdrop-filter has nothing to do. */
-.aurora {
+/* ======================================================= animated mesh ==
+   Four drifting blobs plus a rotating conic wash. This is what the glass
+   refracts; without motion underneath, backdrop-filter has nothing to do. */
+.mesh {
+  position: fixed;
+  inset: -10%;
+  z-index: -2;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 50% 0%, var(--bg-2), transparent 70%),
+    var(--bg);
+}
+
+.mesh i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+  mix-blend-mode: normal;
+}
+
+.mesh i:nth-child(1) {
+  width: 44vmax;
+  height: 44vmax;
+  left: -10vmax;
+  top: -12vmax;
+  background: var(--mesh-1);
+  animation: float-1 24s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(2) {
+  width: 34vmax;
+  height: 34vmax;
+  right: -8vmax;
+  top: 6vmax;
+  background: var(--mesh-3);
+  animation: float-2 30s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(3) {
+  width: 30vmax;
+  height: 30vmax;
+  left: 40%;
+  bottom: -14vmax;
+  background: var(--mesh-2);
+  animation: float-3 27s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(4) {
+  width: 26vmax;
+  height: 26vmax;
+  left: 8vmax;
+  bottom: -10vmax;
+  background: var(--mesh-4);
+  animation: float-4 33s var(--ease) infinite alternate;
+}
+
+@keyframes float-1 {
+  to {
+    transform: translate3d(16vmax, 10vmax, 0) scale(1.18);
+  }
+}
+@keyframes float-2 {
+  to {
+    transform: translate3d(-14vmax, 16vmax, 0) scale(0.85);
+  }
+}
+@keyframes float-3 {
+  to {
+    transform: translate3d(-18vmax, -12vmax, 0) scale(1.2);
+  }
+}
+@keyframes float-4 {
+  to {
+    transform: translate3d(12vmax, -16vmax, 0) scale(0.9);
+  }
+}
+
+/* Film grain. Real frosted glass has texture; a pure gaussian blur reads
+   plastic. This is the cheapest way to break that up. */
+.grain {
   position: fixed;
   inset: 0;
   z-index: -1;
-  overflow: hidden;
-  background: radial-gradient(120% 120% at 50% 0%, var(--bg-2), var(--bg) 60%);
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-.aurora span {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  will-change: transform;
-}
-
-.aurora span:nth-child(1) {
-  width: 46vmax;
-  height: 46vmax;
-  left: -12vmax;
-  top: -14vmax;
-  background: var(--aurora-1);
-  animation: drift-a 26s var(--ease) infinite alternate;
-}
-
-.aurora span:nth-child(2) {
-  width: 38vmax;
-  height: 38vmax;
-  right: -10vmax;
-  top: 18vmax;
-  background: var(--aurora-2);
-  animation: drift-b 32s var(--ease) infinite alternate;
-}
-
-.aurora span:nth-child(3) {
-  width: 42vmax;
-  height: 42vmax;
-  left: 28vmax;
-  bottom: -20vmax;
-  background: var(--aurora-3);
-  animation: drift-c 29s var(--ease) infinite alternate;
-}
-
-@keyframes drift-a {
-  to {
-    transform: translate3d(14vmax, 8vmax, 0) scale(1.15);
-  }
-}
-@keyframes drift-b {
-  to {
-    transform: translate3d(-16vmax, 12vmax, 0) scale(0.88);
-  }
-}
-@keyframes drift-c {
-  to {
-    transform: translate3d(10vmax, -14vmax, 0) scale(1.1);
-  }
-}
-
-/* ---------------------------------------------------------------- glass */
+/* ================================================================ glass == */
 .glass {
   position: relative;
   background: var(--glass);
-  backdrop-filter: blur(22px) saturate(150%);
-  -webkit-backdrop-filter: blur(22px) saturate(150%);
-  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
+  border: 1px solid var(--edge);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--sh-2);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    background var(--dur) var(--ease);
 }
 
-/* The top-edge sheen. This single line is what separates convincing glass
-   from a grey box with blur on it — real glass catches light on its rim. */
+/* Rim light. The single line that separates convincing glass from a blurred
+   grey box — real glass catches light along its edge. */
 .glass::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(160deg, var(--sheen), transparent 42%);
+  background: linear-gradient(150deg, var(--sheen), transparent 46%);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  z-index: 1;
 }
 
-/* -------------------------------------------------------------- 3D tilt */
-/* Driven by the tilt directive, which writes --rx / --ry from pointer position.
-   Defaults to 0 so the class is inert without the directive. */
+.glass:hover {
+  border-color: color-mix(in srgb, var(--brand) 34%, var(--edge));
+}
+
+/* ---------------------------------------------------------------- tilt */
 .tilt {
   --rx: 0deg;
   --ry: 0deg;
@@ -254,12 +300,11 @@ button {
   transform-style: preserve-3d;
   transition: transform 0.5s var(--ease);
 }
-
 .tilt:hover {
-  transition: transform 0.08s linear;
+  transition: transform 0.09s linear;
 }
 
-/* --------------------------------------------------------------- utility */
+/* ------------------------------------------------------------- utility */
 .mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -270,7 +315,7 @@ button {
   font-family: var(--font-mono);
   font-size: var(--t-micro);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   color: var(--ink-3);
 }
 
@@ -286,20 +331,51 @@ button {
   border: 0;
 }
 
-/* ------------------------------------------------------------- scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--glass-edge) transparent;
+/* Every scroll region in the app. */
+.scroll-y {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
 }
 
 *::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: var(--r-pill);
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand) 50%, transparent);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge) transparent;
 }
 
-*::-webkit-scrollbar-thumb {
-  background: var(--glass-edge);
-  border-radius: var(--r-pill);
+/* ------------------------------------------------------ shared motion */
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 260;
+  }
 }
 
 /* -------------------------------------------------------- reduced motion */
@@ -310,9 +386,9 @@ button {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
-
-  .aurora span {
+  .mesh i {
     animation: none;
   }
 }

@@ -3,55 +3,59 @@
 }
 
 .panel {
-  padding: var(--s-5);
+  padding: var(--s-4);
 }
 
-.panel-head {
+.head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--s-3);
-  margin-bottom: var(--s-4);
+  margin-bottom: var(--s-3);
 }
 
-.panel-head h2 {
+.head h2 {
   font-size: var(--t-h2);
   font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-top: var(--s-1);
+  letter-spacing: -0.025em;
+  margin-top: 2px;
 }
 
-.icon-btn {
+.ico {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   border-radius: var(--r-sm);
-  border: 1px solid var(--glass-edge-soft);
+  border: 1px solid var(--edge-soft);
   background: transparent;
-  color: var(--ink-2);
+  color: var(--ink-3);
   cursor: pointer;
   transition:
-    background 0.2s var(--ease),
-    color 0.2s var(--ease);
+    background 0.22s var(--ease),
+    color 0.22s var(--ease),
+    transform 0.22s var(--ease);
 }
 
-.icon-btn:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--brand) 14%, transparent);
+.ico:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--brand) 15%, transparent);
   color: var(--brand);
+  transform: rotate(-40deg);
 }
 
-.icon-btn.del:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--bad) 14%, transparent);
+.ico.del:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bad) 15%, transparent);
   color: var(--bad);
+  transform: none;
 }
 
-.icon-btn:disabled {
-  opacity: 0.4;
+.ico:disabled {
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
-/* ---------------------------------------------------------------- list */
+/* ------------------------------------------------------------------ list */
 .docs {
   list-style: none;
   margin: 0;
@@ -65,6 +69,9 @@
   display: flex;
   align-items: center;
   gap: var(--s-2);
+  /* Stagger: each row enters slightly after the one above it. */
+  animation: enter-up 0.42s var(--ease) both;
+  animation-delay: calc(var(--d) * 55ms);
 }
 
 .doc {
@@ -72,43 +79,54 @@
   display: flex;
   align-items: center;
   gap: var(--s-3);
+  min-width: 0;
   padding: var(--s-3);
   border-radius: var(--r-md);
   border: 1px solid transparent;
-  background: color-mix(in srgb, var(--glass-edge-soft) 60%, transparent);
+  background: var(--well);
   text-align: left;
   cursor: pointer;
-  min-width: 0;
+  position: relative;
+  overflow: hidden;
   transition:
-    background 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    transform 0.2s var(--ease);
+    background 0.24s var(--ease),
+    border-color 0.24s var(--ease),
+    transform 0.24s var(--ease);
 }
 
 .doc:hover:not(:disabled) {
   transform: translateX(3px);
-  border-color: var(--glass-edge);
+  border-color: var(--edge);
 }
 
-/* The active document gets a solid left rule — a spine, like a book on a shelf. */
-.doc.active {
-  background: color-mix(in srgb, var(--brand) 14%, transparent);
-  border-color: color-mix(in srgb, var(--brand) 40%, transparent);
-  box-shadow: inset 3px 0 0 var(--brand);
+/* The active document gets a gradient spine, like a book on a shelf. */
+.doc.on {
+  background: color-mix(in srgb, var(--brand) 13%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 38%, transparent);
 }
 
-.doc.unavailable {
+.doc.on::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--grad-brand);
+}
+
+.doc.off {
   cursor: default;
-  opacity: 0.75;
+  opacity: 0.72;
 }
 
-.doc-body {
+.body {
   display: flex;
   flex-direction: column;
   min-width: 0;
 }
 
-.doc-name {
+.name {
   font-weight: 600;
   font-size: var(--t-small);
   white-space: nowrap;
@@ -116,71 +134,94 @@
   text-overflow: ellipsis;
 }
 
-.doc-meta {
+.meta {
   font-size: var(--t-micro);
   color: var(--ink-3);
 }
 
-/* --------------------------------------------------------------- chips */
-.chip {
+/* --------------------------------------------------------------- badges */
+.badge {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
+  border-radius: 50%;
 }
 
-.chip[data-status='ready'] {
-  background: color-mix(in srgb, var(--ok) 20%, transparent);
+.badge[data-s='ready'] {
+  background: color-mix(in srgb, var(--ok) 22%, transparent);
   color: var(--ok);
 }
-
-.chip[data-status='processing'] {
-  background: color-mix(in srgb, var(--brand) 20%, transparent);
+.badge[data-s='processing'] {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
   color: var(--brand);
 }
-
-.chip[data-status='failed'] {
-  background: color-mix(in srgb, var(--bad) 20%, transparent);
+.badge[data-s='failed'] {
+  background: color-mix(in srgb, var(--bad) 22%, transparent);
   color: var(--bad);
 }
 
 .spin {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
   border: 2px solid currentColor;
   border-top-color: transparent;
-  animation: spin 0.8s linear infinite;
+  animation: rot 0.75s linear infinite;
 }
 
-@keyframes spin {
+@keyframes rot {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* --------------------------------------------------------------- empty */
+/* ---------------------------------------------------------------- empty */
 .empty {
   text-align: center;
-  padding: var(--s-6) var(--s-3);
+  padding: var(--s-5) var(--s-3);
   color: var(--ink-2);
 }
 
+/* Three ghost sheets in perspective — echoes the uploader's stack so the
+   empty state points at the thing that fills it. */
 .empty-mark {
-  width: 52px;
-  height: 64px;
+  display: block;
+  position: relative;
+  width: 46px;
+  height: 56px;
   margin: 0 auto var(--s-4);
-  border-radius: 5px;
-  border: 2px dashed var(--glass-edge);
-  transform: perspective(400px) rotateY(-16deg);
+  perspective: 300px;
 }
 
-.empty .hint {
-  font-size: var(--t-small);
+.empty-mark i {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  border: 1.5px dashed var(--edge);
+}
+.empty-mark i:nth-child(1) {
+  transform: rotateY(-20deg) translateX(-5px);
+  opacity: 0.4;
+}
+.empty-mark i:nth-child(2) {
+  transform: rotateY(-10deg);
+  opacity: 0.7;
+}
+.empty-mark i:nth-child(3) {
+  transform: rotateY(0deg) translateX(5px);
+}
+
+.empty-lead {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tiny {
+  font-size: var(--t-micro);
   color: var(--ink-3);
-  margin-top: var(--s-1);
+  margin-top: 2px;
 }
 
 .note {
@@ -188,31 +229,17 @@
   border-radius: var(--r-sm);
   font-size: var(--t-small);
   margin-bottom: var(--s-3);
-}
-
-.note.bad {
   background: color-mix(in srgb, var(--bad) 14%, transparent);
   color: var(--bad);
 }
 
-/* ------------------------------------------------------------ skeleton */
-.skeleton-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-}
-
-.skeleton {
-  height: 56px;
+.skel {
+  height: 52px;
   border-radius: var(--r-md);
-  background: linear-gradient(
-    90deg,
-    var(--glass-edge-soft) 25%,
-    var(--glass-edge) 50%,
-    var(--glass-edge-soft) 75%
-  );
+  margin-bottom: var(--s-2);
+  background: linear-gradient(90deg, var(--well) 25%, var(--edge-soft) 50%, var(--well) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.4s linear infinite;
+  animation: shimmer 1.3s linear infinite;
 }
 
 @keyframes shimmer {

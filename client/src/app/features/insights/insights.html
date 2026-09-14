@@ -1,105 +1,110 @@
 <section class="glass panel">
-  <header class="panel-head">
+  <header class="head">
     <p class="eyebrow">Session</p>
     <h2>What you've covered</h2>
   </header>
 
-  <!-- Three headline counters. -->
-  <div class="stats">
-    <div class="stat">
-      <span class="stat-value mono">{{ store.turns().length }}</span>
-      <span class="stat-label">asked</span>
+  <div class="tiles">
+    <div class="tile">
+      <span class="v mono">{{ store.turns().length }}</span>
+      <span class="l">asked</span>
     </div>
-    <div class="stat">
-      <span class="stat-value mono ok">{{ store.answeredCount() }}</span>
-      <span class="stat-label">answered</span>
+    <div class="tile ok">
+      <span class="v mono">{{ store.answeredCount() }}</span>
+      <span class="l">answered</span>
     </div>
-    <div class="stat">
-      <span class="stat-value mono warn">{{ store.unansweredCount() }}</span>
-      <span class="stat-label">not covered</span>
+    <div class="tile warn">
+      <span class="v mono">{{ store.unansweredCount() }}</span>
+      <span class="l">no match</span>
     </div>
   </div>
 
   @if (!store.active()) {
-    <p class="muted">Select a document to see its coverage.</p>
+    <div class="void">
+      <div class="void-ring" aria-hidden="true"></div>
+      <p>Select a document to see how much of it you've explored.</p>
+    </div>
   } @else {
-    <!-- CHART 1 — page coverage. Ghost bars are pages nothing has cited yet,
-         so the empty space is the actual message. -->
+    <!-- CHART 1 — the index, as a ring. -->
+    <div class="block ring-row">
+      <svg class="ring" viewBox="0 0 70 70" role="img"
+           [attr.aria-label]="coveragePct() + ' percent of pages cited'">
+        <circle class="ring-tr" cx="35" cy="35" r="30" />
+        <circle class="ring-vl" cx="35" cy="35" r="30" [attr.stroke-dasharray]="ringDash(coveragePct())" />
+        <text class="ring-tx mono" x="35" y="35" text-anchor="middle" dominant-baseline="central">
+          {{ coveragePct() }}%
+        </text>
+      </svg>
+      <div class="ring-key">
+        <p><b class="mono">{{ store.active()!.chunk_count }}</b> chunks indexed</p>
+        <p><b class="mono">{{ store.active()!.page_count }}</b> pages total</p>
+        <p class="dim"><b class="mono">{{ store.pageCoverage().touched }}</b> pages cited so far</p>
+      </div>
+    </div>
+
+    <!-- CHART 2 — page coverage. Ghost bars are the message. -->
     <div class="block">
       <div class="block-head">
         <h3>Page coverage</h3>
-        <span class="mono figure">{{ coveragePct() }}%</span>
+        <span class="fig mono">{{ store.pageCoverage().touched }}/{{ store.active()!.page_count }}</span>
       </div>
 
       @if (bars().length === 0) {
-        <p class="muted small">Ask a question to start mapping the document.</p>
+        <p class="dim small">Ask a question to start mapping the document.</p>
       } @else {
         <div class="bars" role="img" [attr.aria-label]="coveragePct() + '% of pages cited so far'">
           @for (bar of bars(); track bar.page) {
-            <span
-              class="bar"
-              [class.hit]="bar.count > 0"
-              [style.height.px]="bar.height"
-              [attr.title]="'Page ' + bar.page + ' · cited ' + bar.count + '×'"
-            ></span>
+            <span class="bar" [class.hit]="bar.count > 0" [style.--h]="bar.height + 'px'"
+                  [attr.title]="'Page ' + bar.page + ' · cited ' + bar.count + '×'"></span>
           }
         </div>
-        <div class="axis mono">
-          <span>p1</span>
-          <span>p{{ store.active()!.page_count }}</span>
-        </div>
+        <div class="axis mono"><span>p1</span><span>p{{ store.active()!.page_count }}</span></div>
       }
     </div>
 
-    <!-- CHART 2 — retrieval confidence trend. -->
+    <!-- CHART 3 — retrieval confidence over time. -->
     <div class="block">
       <div class="block-head">
         <h3>Retrieval confidence</h3>
-        @if (avgRelevance(); as avg) {
-          <span class="mono figure">{{ avg }}% avg</span>
-        }
+        @if (avgRelevance(); as avg) { <span class="fig mono">{{ avg }}% avg</span> }
       </div>
 
       @if (!trendPath()) {
-        <p class="muted small">
-          Needs at least two answers. Shows how closely retrieved passages matched
-          each question.
-        </p>
+        <p class="dim small">Needs two answers. Tracks how closely retrieved passages matched each question.</p>
       } @else {
-        <svg class="spark" viewBox="0 0 240 56" preserveAspectRatio="none" role="img"
+        <svg class="spark" viewBox="0 0 240 52" preserveAspectRatio="none" role="img"
              [attr.aria-label]="'Average relevance ' + avgRelevance() + ' percent'">
           <defs>
-            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--brand)" stop-opacity="0.34" />
+            <linearGradient id="sf" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--brand)" stop-opacity="0.38" />
               <stop offset="100%" stop-color="var(--brand)" stop-opacity="0" />
             </linearGradient>
+            <linearGradient id="sl" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="var(--brand-lift)" />
+              <stop offset="100%" stop-color="var(--iris)" />
+            </linearGradient>
           </defs>
-          <polygon [attr.points]="trendArea()" fill="url(#sparkFill)" />
-          <polyline
-            [attr.points]="trendPath()"
-            fill="none"
-            stroke="var(--brand)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+          <polygon [attr.points]="trendArea()" fill="url(#sf)" />
+          <polyline [attr.points]="trendPath()" fill="none" stroke="url(#sl)" stroke-width="2.4"
+                    stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       }
     </div>
 
-    <!-- CHART 3 — the index itself, as a donut. -->
-    <div class="block ring-block">
-      <svg class="ring" viewBox="0 0 80 80" role="img"
-           [attr.aria-label]="coveragePct() + ' percent of pages visited'">
-        <circle class="ring-track" cx="40" cy="40" r="34" />
-        <circle class="ring-value" cx="40" cy="40" r="34"
-                [attr.stroke-dasharray]="ringDash(coveragePct())" />
-      </svg>
-      <div class="ring-legend">
-        <p><strong class="mono">{{ store.active()!.chunk_count }}</strong> chunks indexed</p>
-        <p><strong class="mono">{{ store.active()!.page_count }}</strong> pages total</p>
-        <p class="muted small">{{ store.pageCoverage().touched }} pages cited so far</p>
+    <!-- Most-cited pages. Tells you where the document's centre of gravity is. -->
+    @if (topPages().length > 0) {
+      <div class="block">
+        <div class="block-head"><h3>Most cited</h3></div>
+        <ul class="tops">
+          @for (p of topPages(); track p.page; let i = $index) {
+            <li [style.--d]="i">
+              <span class="tp mono">p{{ p.page }}</span>
+              <span class="tb"><i [style.width.%]="p.share"></i></span>
+              <span class="tc mono">{{ p.count }}×</span>
+            </li>
+          }
+        </ul>
       </div>
-    </div>
+    }
   }
 </section>

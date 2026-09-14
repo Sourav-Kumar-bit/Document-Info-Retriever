@@ -1,73 +1,64 @@
 <section class="glass panel">
-  <header class="panel-head">
+  <header class="head">
     <div>
       <p class="eyebrow">Library</p>
       <h2>Your documents</h2>
     </div>
-    <button type="button" class="icon-btn" (click)="reload()" aria-label="Refresh list">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+    <button type="button" class="ico" (click)="reload()" aria-label="Refresh list">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M21 12a9 9 0 1 1-2.6-6.4M21 3v6h-6" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
   </header>
 
   @if (store.libraryError(); as error) {
-    <p class="note bad">{{ error }}</p>
+    <p class="note">{{ error }}</p>
   }
 
   @if (store.loadingLibrary() && store.documents().length === 0) {
-    <div class="skeleton-list">
-      @for (row of [1, 2]; track row) {
-        <div class="skeleton"></div>
-      }
-    </div>
+    @for (row of [1, 2]; track row) {
+      <div class="skel"></div>
+    }
   } @else if (store.documents().length === 0) {
-    <!-- An empty screen is an invitation to act, not a shrug. -->
     <div class="empty">
-      <div class="empty-mark" aria-hidden="true"></div>
-      <p>Nothing indexed yet.</p>
-      <p class="hint">Add a PDF above and it will appear here while it processes.</p>
+      <span class="empty-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <p class="empty-lead">No documents yet</p>
+      <p class="tiny">Add a PDF above. It'll appear here while it indexes.</p>
     </div>
   } @else {
     <ul class="docs">
-      @for (doc of store.documents(); track doc.id) {
-        <li>
+      @for (doc of store.documents(); track doc.id; let i = $index) {
+        <li [style.--d]="i">
           <button
             type="button"
             class="doc"
-            [class.active]="doc.id === store.activeId()"
-            [class.unavailable]="doc.status !== 'ready'"
+            [class.on]="doc.id === store.activeId()"
+            [class.off]="doc.status !== 'ready'"
             [disabled]="doc.status !== 'ready'"
             (click)="select(doc)"
             [attr.aria-current]="doc.id === store.activeId() ? 'true' : null"
           >
-            <span class="chip" [attr.data-status]="doc.status" aria-hidden="true">
+            <span class="badge" [attr.data-s]="doc.status" aria-hidden="true">
               @if (doc.status === 'processing') {
-                <span class="spin"></span>
+                <i class="spin"></i>
               } @else if (doc.status === 'ready') {
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.4">
                   <path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               } @else {
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.4">
                   <path d="M18 6 6 18M6 6l12 12" stroke-linecap="round" />
                 </svg>
               }
             </span>
 
-            <span class="doc-body">
-              <span class="doc-name">{{ short(doc.filename) }}</span>
-              <span class="doc-meta mono">
+            <span class="body">
+              <span class="name">{{ short(doc.filename) }}</span>
+              <span class="meta mono">
                 @switch (doc.status) {
-                  @case ('ready') {
-                    {{ doc.page_count }} pages · {{ doc.chunk_count }} chunks
-                  }
-                  @case ('processing') {
-                    Indexing…
-                  }
-                  @default {
-                    {{ doc.error || 'Processing failed' }}
-                  }
+                  @case ('ready') { {{ doc.page_count }}p · {{ doc.chunk_count }} chunks }
+                  @case ('processing') { indexing… }
+                  @default { {{ doc.error || 'failed' }} }
                 }
               </span>
             </span>
@@ -75,12 +66,12 @@
 
           <button
             type="button"
-            class="icon-btn del"
+            class="ico del"
             [disabled]="deleting() === doc.id"
             (click)="remove($event, doc)"
             [attr.aria-label]="'Delete ' + doc.filename"
           >
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </button>

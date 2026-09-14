@@ -9,24 +9,24 @@
       name="description"
       content="Upload a document and ask questions about it. Every answer cites the page it came from."
     />
-    <meta name="theme-color" content="#060914" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#eaeefa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#05070f" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e6ebf8" media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- Set the theme before first paint so there's no white flash on reload. -->
+    <!-- Resolve the theme before first paint, or every reload flashes white. -->
     <script>
       (function () {
         try {
           var saved = localStorage.getItem('dir_theme');
-          var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-          document.documentElement.dataset.theme = saved || (prefersLight ? 'light' : 'dark');
+          var light = window.matchMedia('(prefers-color-scheme: light)').matches;
+          document.documentElement.dataset.theme = saved || (light ? 'light' : 'dark');
         } catch (e) {}
       })();
     </script>

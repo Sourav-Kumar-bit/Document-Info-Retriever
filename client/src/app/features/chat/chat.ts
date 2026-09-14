@@ -28,6 +28,13 @@ export class Chat implements AfterViewChecked {
   protected readonly store = inject(DocumentStore);
   protected readonly suggestions = SUGGESTIONS;
 
+  /** Shown in the landing hero, which now lives inside the chat stage. */
+  protected readonly heroSteps = [
+    { n: 1, title: 'Upload', body: 'A PDF with a real text layer.' },
+    { n: 2, title: 'Index', body: 'Split into chunks, embedded, stored.' },
+    { n: 3, title: 'Ask', body: 'Answers arrive with their page numbers.' },
+  ];
+
   private readonly scroller = viewChild<ElementRef<HTMLElement>>('scroller');
 
   protected readonly draft = signal('');
