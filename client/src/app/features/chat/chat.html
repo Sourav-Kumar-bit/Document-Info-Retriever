@@ -1,21 +1,22 @@
-<section class="panel chat">
+<section class="glass chat">
   <header class="head">
-    <div class="head-main">
+    <div class="title">
       <p class="eyebrow">
-        @if (store.active()) { Asking } @else { No document }
+        @if (store.active()) { Asking } @else { Ready when you are }
       </p>
       <h2>
-        @if (store.active(); as doc) { {{ doc.filename }} } @else { Select a document }
+        @if (store.active(); as doc) { {{ doc.filename }} } @else { No document selected }
       </h2>
     </div>
 
     @if (store.active(); as doc) {
-      @if (doc.status === 'ready') {
-        <div class="facts mono">
-          <span><b>{{ doc.page_count }}</b> pages</span>
-          <span><b>{{ doc.chunk_count }}</b> chunks</span>
-        </div>
-      }
+      <div class="facts mono">
+        @if (doc.status === 'ready') {
+          <span>{{ doc.page_count }} pages</span>
+          <span class="sep"></span>
+          <span>{{ doc.chunk_count }} chunks</span>
+        }
+      </div>
     }
 
     @if (store.turns().length > 0) {
@@ -25,56 +26,53 @@
 
   <div class="scroller scroll-y" #scroller>
     @if (!store.active()) {
-      <div class="stage-empty">
-        <div class="mark-lg" aria-hidden="true">
-          <span></span><span></span><span></span>
-        </div>
-        <h1>Ask a document<br /><em>anything</em></h1>
-        <p class="lede">
-          Upload a PDF on the left. It gets split, embedded and indexed — then
-          every answer comes back with the pages it was drawn from.
+      <!-- The hero lives here now. It occupies the space the conversation will
+           occupy, instead of pushing everything below the fold. -->
+      <div class="hero">
+        <h1>
+          Ask a document<br />
+          <em>anything</em>, and see<br />
+          <span class="mark">where the answer lives</span>
+        </h1>
+        <p class="hero-sub">
+          Upload a PDF. It gets split, embedded and indexed. Every answer comes back
+          with the pages it was drawn from — nothing is invented.
         </p>
-        <div class="steps">
+        <div class="hero-steps">
           @for (step of heroSteps; track step.n) {
             <div class="step" [style.--d]="step.n">
               <span class="step-n mono">{{ step.n }}</span>
-              <b>{{ step.title }}</b>
-              <small>{{ step.body }}</small>
+              <span>
+                <b>{{ step.title }}</b>
+                <small>{{ step.body }}</small>
+              </span>
             </div>
           }
         </div>
       </div>
     } @else if (store.active()!.status !== 'ready') {
-      <div class="stage-empty tight">
-        <div class="pulse-ring" aria-hidden="true"></div>
-        <h1 class="sm">Indexing</h1>
-        <p class="lede">Reading pages and building the index. Questions unlock the moment it's ready.</p>
+      <div class="gate">
+        <div class="gate-spin" aria-hidden="true"></div>
+        <p class="gate-lead">Still indexing</p>
+        <p class="tiny">Questions unlock the moment this document is ready.</p>
       </div>
     } @else if (store.turns().length === 0) {
-      <div class="stage-empty tight">
-        <p class="eyebrow">Ready</p>
-        <h1 class="sm">Every answer cites its page.</h1>
-        <p class="lede">Pick a starting point, or write your own question below.</p>
-        <div class="seeds">
+      <div class="gate">
+        <p class="gate-lead">Every answer cites its page.</p>
+        <p class="tiny">Start with one of these, or write your own.</p>
+        <div class="chips">
           @for (s of suggestions; track s; let i = $index) {
-            <button type="button" class="seed" [style.--d]="i" (click)="useSuggestion(s)">
-              <span class="seed-text">{{ s }}</span>
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
+            <button type="button" class="chip" [style.--d]="i" (click)="useSuggestion(s)">{{ s }}</button>
           }
         </div>
       </div>
     } @else {
       @for (turn of store.turns(); track turn.id) {
         <article class="turn">
-          <div class="q-row">
-            <p class="q">{{ turn.question }}</p>
-          </div>
+          <p class="q">{{ turn.question }}</p>
 
           @if (turn.pending) {
-            <div class="a thinking" role="status">
+            <div class="thinking" role="status">
               <i></i><i></i><i></i>
               <em>Searching the document</em>
             </div>
@@ -84,9 +82,13 @@
               <button type="button" class="ghost" (click)="store.retry(turn.id)">Try again</button>
             </div>
           } @else if (turn.response && !turn.response.enough_info) {
+            <!-- Not an error. The guardrail firing is a legitimate outcome. -->
             <div class="a warn">
-              <p class="warn-lead">This document doesn't cover that.</p>
-              <p class="sub">Nothing retrieved was close enough to answer from. Try different wording, or a narrower question.</p>
+              <p><b>This document doesn't cover that.</b></p>
+              <p class="tiny">
+                Nothing retrieved was close enough to answer from. Try different
+                wording, or a narrower question.
+              </p>
             </div>
           } @else if (turn.response; as response) {
             <div class="a">
@@ -99,19 +101,19 @@
               <p class="prose">{{ response.answer }}</p>
 
               @if (response.sources.length > 0) {
-                <div class="cite-head">
-                  <span class="eyebrow">Cited from</span>
-                  <span class="cite-rule"></span>
-                  <span class="mono cite-n">{{ response.sources.length }}</span>
-                </div>
-
+                <p class="eyebrow cite-label">Cited from</p>
+                <!-- SIGNATURE: sources as physical pages in perspective. -->
                 <div class="fan">
                   @for (source of response.sources; track source.chunk_index; let i = $index) {
-                    <button type="button" class="pg" [class.open]="openSource() === turn.id + '-' + i"
-                            [style.--i]="i" (click)="toggleSource(turn.id + '-' + i)"
-                            [attr.aria-expanded]="openSource() === turn.id + '-' + i">
-                      <span class="pg-lines" aria-hidden="true"></span>
-                      <span class="pg-no mono">{{ source.page ?? '?' }}</span>
+                    <button
+                      type="button"
+                      class="pg"
+                      [class.open]="openSource() === turn.id + '-' + i"
+                      [style.--i]="i"
+                      (click)="toggleSource(turn.id + '-' + i)"
+                      [attr.aria-expanded]="openSource() === turn.id + '-' + i"
+                    >
+                      <span class="pg-no mono">p{{ source.page ?? '?' }}</span>
                       @if (relevance(source); as score) {
                         <svg class="dial" viewBox="0 0 40 40" aria-hidden="true">
                           <circle class="tr" cx="20" cy="20" r="15" />
@@ -144,18 +146,25 @@
   </div>
 
   <div class="composer">
-    <div class="composer-field">
-      <textarea rows="1" [ngModel]="draft()" (ngModelChange)="draft.set($event)"
-                (keydown)="onKeydown($event)" [disabled]="!store.canAsk()"
-                [placeholder]="store.canAsk() ? 'Ask something about this document…' : 'Select a ready document to ask'"
-                aria-label="Your question"></textarea>
-      <button type="button" class="send" [disabled]="!store.canAsk() || draft().trim().length === 0"
-              (click)="send()" aria-label="Send question">
-        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </button>
-    </div>
-    <p class="hint mono">Enter to send · Shift+Enter for a new line</p>
+    <textarea
+      rows="1"
+      [ngModel]="draft()"
+      (ngModelChange)="draft.set($event)"
+      (keydown)="onKeydown($event)"
+      [disabled]="!store.canAsk()"
+      [placeholder]="store.canAsk() ? 'Ask something about this document…' : 'Select a ready document to ask'"
+      aria-label="Your question"
+    ></textarea>
+    <button
+      type="button"
+      class="send"
+      [disabled]="!store.canAsk() || draft().trim().length === 0"
+      (click)="send()"
+      aria-label="Send question"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
   </div>
 </section>

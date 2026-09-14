@@ -24,37 +24,34 @@
 .ico {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
   border-radius: var(--r-sm);
-  border: 1px solid transparent;
+  border: 1px solid var(--edge-soft);
   background: transparent;
   color: var(--ink-3);
   cursor: pointer;
   transition:
-    background 0.2s var(--ease),
-    color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    transform 0.3s var(--ease);
+    background 0.22s var(--ease),
+    color 0.22s var(--ease),
+    transform 0.22s var(--ease);
 }
 
 .ico:hover:not(:disabled) {
-  background: var(--well);
-  border-color: var(--edge);
-  color: var(--ink);
-  transform: rotate(-90deg);
+  background: color-mix(in srgb, var(--brand) 15%, transparent);
+  color: var(--brand);
+  transform: rotate(-40deg);
 }
 
 .ico.del:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--bad) 15%, transparent);
   color: var(--bad);
-  border-color: color-mix(in srgb, var(--bad) 40%, transparent);
-  background: color-mix(in srgb, var(--bad) 12%, transparent);
   transform: none;
 }
 
 .ico:disabled {
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
@@ -72,8 +69,9 @@
   display: flex;
   align-items: center;
   gap: var(--s-2);
-  animation: rise 0.4s var(--ease) both;
-  animation-delay: calc(var(--d) * 50ms);
+  /* Stagger: each row enters slightly after the one above it. */
+  animation: enter-up 0.42s var(--ease) both;
+  animation-delay: calc(var(--d) * 55ms);
 }
 
 .doc {
@@ -84,27 +82,27 @@
   min-width: 0;
   padding: var(--s-3);
   border-radius: var(--r-md);
-  border: 1px solid var(--hairline);
+  border: 1px solid transparent;
   background: var(--well);
   text-align: left;
   cursor: pointer;
   position: relative;
   overflow: hidden;
   transition:
-    background 0.22s var(--ease),
-    border-color 0.22s var(--ease),
-    transform 0.22s var(--ease);
+    background 0.24s var(--ease),
+    border-color 0.24s var(--ease),
+    transform 0.24s var(--ease);
 }
 
 .doc:hover:not(:disabled) {
   transform: translateX(3px);
-  border-color: var(--edge-hi);
+  border-color: var(--edge);
 }
 
-/* A spine on the active document, like a book on a shelf. */
+/* The active document gets a gradient spine, like a book on a shelf. */
 .doc.on {
-  background: color-mix(in srgb, var(--blue) 11%, transparent);
-  border-color: color-mix(in srgb, var(--blue) 42%, transparent);
+  background: color-mix(in srgb, var(--brand) 13%, transparent);
+  border-color: color-mix(in srgb, var(--brand) 38%, transparent);
 }
 
 .doc.on::before {
@@ -114,12 +112,12 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: linear-gradient(180deg, var(--blue-lift), var(--blue));
+  background: var(--grad-brand);
 }
 
 .doc.off {
   cursor: default;
-  opacity: 0.7;
+  opacity: 0.72;
 }
 
 .body {
@@ -130,7 +128,7 @@
 
 .name {
   font-weight: 600;
-  font-size: var(--t-sm);
+  font-size: var(--t-small);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,41 +137,44 @@
 .meta {
   font-size: var(--t-micro);
   color: var(--ink-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* --------------------------------------------------------------- badges */
 .badge {
   display: grid;
   place-items: center;
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   border-radius: 50%;
 }
 
 .badge[data-s='ready'] {
-  background: color-mix(in srgb, var(--ok) 20%, transparent);
+  background: color-mix(in srgb, var(--ok) 22%, transparent);
   color: var(--ok);
 }
 .badge[data-s='processing'] {
-  background: color-mix(in srgb, var(--blue) 20%, transparent);
-  color: var(--blue-lift);
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: var(--brand);
 }
 .badge[data-s='failed'] {
-  background: color-mix(in srgb, var(--bad) 20%, transparent);
+  background: color-mix(in srgb, var(--bad) 22%, transparent);
   color: var(--bad);
 }
 
 .spin {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
   border: 2px solid currentColor;
   border-top-color: transparent;
-  animation: spin 0.75s linear infinite;
+  animation: rot 0.75s linear infinite;
+}
+
+@keyframes rot {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ---------------------------------------------------------------- empty */
@@ -183,36 +184,37 @@
   color: var(--ink-2);
 }
 
+/* Three ghost sheets in perspective — echoes the uploader's stack so the
+   empty state points at the thing that fills it. */
 .empty-mark {
   display: block;
   position: relative;
-  width: 40px;
-  height: 48px;
-  margin: 0 auto var(--s-3);
-  perspective: 280px;
+  width: 46px;
+  height: 56px;
+  margin: 0 auto var(--s-4);
+  perspective: 300px;
 }
 
 .empty-mark i {
   position: absolute;
   inset: 0;
-  border-radius: 4px;
-  border: 1.5px dashed var(--edge-hi);
+  border-radius: 5px;
+  border: 1.5px dashed var(--edge);
 }
 .empty-mark i:nth-child(1) {
   transform: rotateY(-20deg) translateX(-5px);
-  opacity: 0.35;
+  opacity: 0.4;
 }
 .empty-mark i:nth-child(2) {
   transform: rotateY(-10deg);
-  opacity: 0.65;
+  opacity: 0.7;
 }
 .empty-mark i:nth-child(3) {
-  transform: translateX(5px);
+  transform: rotateY(0deg) translateX(5px);
 }
 
 .empty-lead {
   font-weight: 600;
-  font-size: var(--t-sm);
   color: var(--ink);
 }
 
@@ -220,24 +222,22 @@
   font-size: var(--t-micro);
   color: var(--ink-3);
   margin-top: 2px;
-  line-height: 1.5;
 }
 
 .note {
   padding: var(--s-3);
   border-radius: var(--r-sm);
-  font-size: var(--t-sm);
+  font-size: var(--t-small);
   margin-bottom: var(--s-3);
-  background: color-mix(in srgb, var(--bad) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--bad) 28%, transparent);
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
   color: var(--bad);
 }
 
 .skel {
-  height: 50px;
+  height: 52px;
   border-radius: var(--r-md);
   margin-bottom: var(--s-2);
-  background: linear-gradient(90deg, var(--well) 25%, var(--edge) 50%, var(--well) 75%);
+  background: linear-gradient(90deg, var(--well) 25%, var(--edge-soft) 50%, var(--well) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.3s linear infinite;
 }

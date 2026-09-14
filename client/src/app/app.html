@@ -1,19 +1,18 @@
-<!-- Three calm layers. The ruled paper is what the glass refracts. -->
-<div class="page-bg" aria-hidden="true"></div>
-<div class="page-rules" aria-hidden="true"></div>
-<div class="page-grain" aria-hidden="true"></div>
+<div class="mesh" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
 
 <a class="skip" href="#stage">Skip to the conversation</a>
 
-<header class="topbar panel">
+<!-- ============================================================= topbar -->
+<header class="topbar glass">
   <div class="brand">
     <span class="mark" aria-hidden="true">
       <svg viewBox="0 0 32 32">
-        <rect x="5" y="7" width="16" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.32" />
-        <rect x="8.5" y="4.5" width="16" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6" />
+        <rect x="5" y="7" width="16" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+        <rect x="8.5" y="4.5" width="16" height="20" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.55" />
         <path d="M12 11h9M12 15h9M12 19h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-        <circle cx="21.5" cy="20.5" r="5" fill="none" stroke="var(--amber)" stroke-width="2" />
-        <path d="m25.4 24.4 4 4" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" />
+        <circle cx="21.5" cy="20.5" r="5" fill="none" stroke="var(--cite)" stroke-width="2" />
+        <path d="m25.4 24.4 4 4" stroke="var(--cite)" stroke-width="2" stroke-linecap="round" />
       </svg>
     </span>
     <span class="brand-text">
@@ -24,18 +23,29 @@
 
   <nav class="tabs" aria-label="Sections">
     @for (p of panes; track p.id) {
-      <button type="button" class="tab" [class.on]="pane() === p.id" (click)="show(p.id)"
-              [attr.aria-current]="pane() === p.id ? 'page' : null">{{ p.label }}</button>
+      <button
+        type="button"
+        class="tab"
+        [class.on]="pane() === p.id"
+        (click)="show(p.id)"
+        [attr.aria-current]="pane() === p.id ? 'page' : null"
+      >
+        {{ p.label }}
+      </button>
     }
   </nav>
 
   <div class="tools">
     @if (store.processingCount() > 0) {
-      <span class="live mono"><i></i>{{ store.processingCount() }} indexing</span>
+      <span class="pulse mono"><i></i>{{ store.processingCount() }}</span>
     }
     <span class="sid mono" title="Anonymous session id">{{ session.shortId }}</span>
-    <button type="button" class="swap" (click)="theme.toggle()"
-            [attr.aria-label]="'Switch to ' + (theme.theme() === 'dark' ? 'light' : 'dark') + ' theme'">
+    <button
+      type="button"
+      class="swap"
+      (click)="theme.toggle()"
+      [attr.aria-label]="'Switch to ' + (theme.theme() === 'dark' ? 'light' : 'dark') + ' theme'"
+    >
       <span class="swap-knob" [class.light]="theme.theme() === 'light'">
         @if (theme.theme() === 'dark') {
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -52,6 +62,9 @@
   </div>
 </header>
 
+<!-- ========================================================== workspace -->
+<!-- Three columns that each scroll internally. The page itself never scrolls,
+     so nothing can stretch into dead space the way the old layout did. -->
 <main class="workspace">
   <aside class="region rail left" [class.on]="pane() === 'library'">
     <div class="rail-inner scroll-y">

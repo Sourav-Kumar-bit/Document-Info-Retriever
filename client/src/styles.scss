@@ -1,119 +1,122 @@
 /* ===========================================================================
-   Pagewise — design tokens
+   Document Info Retriever — design tokens
 
-   The previous build put four saturated blobs behind frosted glass, which
-   turned to mud: the topbar went solid blue, and an amber blob behind the chat
-   panel read as a brown smear. Glass only looks like glass when what sits
-   behind it is calm and has structure.
-
-   So: one blue glow, a ruled-paper texture, a dot grid. And colour discipline —
-   blue is the system speaking, amber is the DOCUMENT speaking, and amber
-   appears nowhere else.
+   Three hues, each with one job:
+     brand blue  — the system speaking (chrome, actions, confidence)
+     iris violet — depth and gradient partner to blue, never used alone
+     cite amber  — the DOCUMENT speaking. Citations only. A highlighter pen.
    =========================================================================== */
 
 :root {
-  --blue: #2f6bff;
-  --blue-lift: #7aa2ff;
-  --blue-deep: #14379f;
+  /* ---- brand (theme-independent) */
+  --brand: #1856ff;
+  --brand-lift: #5b86ff;
+  --brand-deep: #0a2fa8;
+  --iris: #7c5cff;
+  --iris-lift: #a68bff;
 
-  --amber: #f2a25c;
-  --amber-lift: #ffc48d;
-  --amber-deep: #b46a24;
+  --cite: #e89558;
+  --cite-lift: #ffc08a;
+  --cite-deep: #c46f2e;
 
-  --ok: #21c87a;
-  --warn: #f2a25c;
-  --bad: #f0455e;
+  --ok: #07ca6b;
+  --warn: #e89558;
+  --bad: #ea2143;
 
+  --grad-brand: linear-gradient(135deg, var(--brand-lift), var(--brand) 45%, var(--iris));
+  --grad-cite: linear-gradient(135deg, var(--cite-lift), var(--cite));
+
+  /* ---- type */
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
 
-  --t-hero: clamp(1.75rem, 1rem + 2.6vw, 3rem);
-  --t-h1: clamp(1.25rem, 1.05rem + 0.9vw, 1.6rem);
-  --t-h2: 1.0625rem;
+  --t-display: clamp(1.9rem, 1.1rem + 2.6vw, 3.25rem);
+  --t-h1: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+  --t-h2: clamp(1.05rem, 0.98rem + 0.4vw, 1.2rem);
   --t-body: 0.9375rem;
-  --t-sm: 0.8125rem;
-  --t-xs: 0.75rem;
+  --t-small: 0.8125rem;
   --t-micro: 0.6875rem;
 
+  /* ---- space */
   --s-1: 0.25rem;
   --s-2: 0.5rem;
   --s-3: 0.75rem;
   --s-4: 1rem;
   --s-5: 1.5rem;
   --s-6: 2rem;
-  --s-7: 2.75rem;
 
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 18px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
   --r-pill: 999px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
-  --dur: 0.34s;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur: 0.38s;
 
-  --rail: 308px;
-  --topbar-h: 58px;
-
-  /* The ruled-paper rhythm. */
-  --rule: 30px;
-}
-
-/* ------------------------------------------------------------- dark theme */
-:root,
-:root[data-theme='dark'] {
-  color-scheme: dark;
-
-  --bg: #070910;
-  --bg-lift: #0d1220;
-  --glow: rgba(47, 107, 255, 0.3);
-
-  --panel-bg: rgba(255, 255, 255, 0.042);
-  --panel-hi: rgba(255, 255, 255, 0.07);
-  --well: rgba(255, 255, 255, 0.035);
-  --edge: rgba(255, 255, 255, 0.1);
-  --edge-hi: rgba(255, 255, 255, 0.2);
-  --hairline: rgba(255, 255, 255, 0.07);
-  --rule-ink: rgba(255, 255, 255, 0.028);
-
-  --ink: #eff3fa;
-  --ink-2: #9ba7c0;
-  --ink-3: #66718b;
-
-  --sheen: rgba(255, 255, 255, 0.16);
-  --grain-a: 0.045;
-
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --sh-2: 0 2px 10px rgba(0, 0, 0, 0.45), 0 18px 40px -20px rgba(0, 0, 0, 0.9);
-  --sh-3: 0 4px 18px rgba(0, 0, 0, 0.5), 0 40px 80px -30px rgba(0, 0, 0, 1);
+  --rail: 316px;
+  --topbar-h: 62px;
 }
 
 /* ------------------------------------------------------------ light theme */
+:root,
 :root[data-theme='light'] {
   color-scheme: light;
+  --bg: #e6ebf8;
+  --bg-2: #f3f6fd;
+  --mesh-1: rgba(24, 86, 255, 0.4);
+  --mesh-2: rgba(232, 149, 88, 0.3);
+  --mesh-3: rgba(124, 92, 255, 0.34);
+  --mesh-4: rgba(7, 202, 107, 0.16);
 
-  --bg: #eef1f7;
-  --bg-lift: #ffffff;
-  --glow: rgba(47, 107, 255, 0.16);
+  --glass: rgba(255, 255, 255, 0.66);
+  --glass-2: rgba(255, 255, 255, 0.42);
+  --glass-solid: rgba(255, 255, 255, 0.9);
+  --edge: rgba(255, 255, 255, 0.92);
+  --edge-soft: rgba(255, 255, 255, 0.52);
+  --hairline: rgba(16, 19, 34, 0.09);
+  --well: rgba(16, 19, 34, 0.045);
 
-  --panel-bg: rgba(255, 255, 255, 0.78);
-  --panel-hi: rgba(255, 255, 255, 0.94);
-  --well: rgba(12, 16, 32, 0.035);
-  --edge: rgba(12, 16, 32, 0.09);
-  --edge-hi: rgba(12, 16, 32, 0.16);
-  --hairline: rgba(12, 16, 32, 0.08);
-  --rule-ink: rgba(12, 16, 32, 0.035);
+  --ink: #0d1020;
+  --ink-2: #434d66;
+  --ink-3: #6b7691;
 
-  --ink: #0a0e1a;
-  --ink-2: #495366;
-  --ink-3: #79839a;
+  --sheen: rgba(255, 255, 255, 0.9);
+  --grain: 0.035;
 
-  --sheen: rgba(255, 255, 255, 0.95);
-  --grain-a: 0.022;
+  --sh-1: 0 1px 2px rgba(13, 16, 32, 0.06);
+  --sh-2: 0 2px 8px rgba(13, 16, 32, 0.06), 0 14px 30px -14px rgba(13, 16, 32, 0.2);
+  --sh-3: 0 4px 14px rgba(13, 16, 32, 0.08), 0 30px 60px -22px rgba(13, 16, 32, 0.3);
+}
 
-  --sh-1: 0 1px 2px rgba(10, 14, 26, 0.05);
-  --sh-2: 0 2px 8px rgba(10, 14, 26, 0.05), 0 16px 32px -18px rgba(10, 14, 26, 0.2);
-  --sh-3: 0 4px 16px rgba(10, 14, 26, 0.07), 0 36px 64px -26px rgba(10, 14, 26, 0.3);
+/* ------------------------------------------------------------- dark theme */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #05070f;
+  --bg-2: #0c1226;
+  --mesh-1: rgba(24, 86, 255, 0.46);
+  --mesh-2: rgba(232, 149, 88, 0.24);
+  --mesh-3: rgba(124, 92, 255, 0.4);
+  --mesh-4: rgba(7, 202, 107, 0.14);
+
+  --glass: rgba(255, 255, 255, 0.058);
+  --glass-2: rgba(255, 255, 255, 0.03);
+  --glass-solid: rgba(16, 22, 42, 0.88);
+  --edge: rgba(255, 255, 255, 0.13);
+  --edge-soft: rgba(255, 255, 255, 0.06);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --well: rgba(255, 255, 255, 0.04);
+
+  --ink: #eef2fb;
+  --ink-2: #a3afc7;
+  --ink-3: #737f9a;
+
+  --sheen: rgba(255, 255, 255, 0.18);
+  --grain: 0.05;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --sh-2: 0 2px 8px rgba(0, 0, 0, 0.4), 0 16px 34px -16px rgba(0, 0, 0, 0.75);
+  --sh-3: 0 4px 16px rgba(0, 0, 0, 0.45), 0 36px 72px -26px rgba(0, 0, 0, 0.9);
 }
 
 /* ------------------------------------------------------------------ reset */
@@ -134,18 +137,19 @@ body {
   font-size: var(--t-body);
   line-height: 1.55;
   color: var(--ink);
+  /* Painted on <body> too, so there is never a seam if a layer is shorter
+     than the document. The previous build showed a hard edge here. */
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden;
+  overflow: hidden; /* the app shell owns scrolling, not the page */
 }
 
 h1,
 h2,
 h3,
 p,
-figure,
-blockquote {
+figure {
   margin: 0;
 }
 
@@ -155,76 +159,126 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--blue-lift);
-  outline-offset: 2px;
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
   border-radius: 6px;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--amber) 40%, transparent);
+  background: color-mix(in srgb, var(--cite) 45%, transparent);
 }
 
-/* ============================================================= the page ==
-   Three stacked fixed layers. Nothing moves fast, nothing is saturated. */
-
-.page-bg {
+/* ======================================================= animated mesh ==
+   Four drifting blobs plus a rotating conic wash. This is what the glass
+   refracts; without motion underneath, backdrop-filter has nothing to do. */
+.mesh {
   position: fixed;
-  inset: 0;
-  z-index: -3;
-  background:
-    radial-gradient(90% 60% at 50% -10%, var(--glow), transparent 62%),
-    linear-gradient(180deg, var(--bg-lift) 0%, var(--bg) 46%);
-}
-
-/* Ruled lines plus a dot grid — the signature. This is an app about reading
-   documents, so the background is a sheet of ruled paper. It also gives the
-   backdrop-filter real structure to refract, which a blurred solid never has. */
-.page-rules {
-  position: fixed;
-  inset: 0;
+  inset: -10%;
   z-index: -2;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(to bottom, var(--rule-ink) 0 1px, transparent 1px var(--rule)),
-    radial-gradient(circle at 1px 1px, var(--rule-ink) 1px, transparent 0);
-  background-size:
-    100% var(--rule),
-    calc(var(--rule) * 2) calc(var(--rule) * 2);
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 45%, transparent 92%);
-  mask-image: linear-gradient(180deg, #000 0%, #000 45%, transparent 92%);
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 50% 0%, var(--bg-2), transparent 70%),
+    var(--bg);
 }
 
-/* Film grain. A pure gaussian blur reads plastic; grain reads as glass. */
-.page-grain {
+.mesh i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+  mix-blend-mode: normal;
+}
+
+.mesh i:nth-child(1) {
+  width: 44vmax;
+  height: 44vmax;
+  left: -10vmax;
+  top: -12vmax;
+  background: var(--mesh-1);
+  animation: float-1 24s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(2) {
+  width: 34vmax;
+  height: 34vmax;
+  right: -8vmax;
+  top: 6vmax;
+  background: var(--mesh-3);
+  animation: float-2 30s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(3) {
+  width: 30vmax;
+  height: 30vmax;
+  left: 40%;
+  bottom: -14vmax;
+  background: var(--mesh-2);
+  animation: float-3 27s var(--ease) infinite alternate;
+}
+.mesh i:nth-child(4) {
+  width: 26vmax;
+  height: 26vmax;
+  left: 8vmax;
+  bottom: -10vmax;
+  background: var(--mesh-4);
+  animation: float-4 33s var(--ease) infinite alternate;
+}
+
+@keyframes float-1 {
+  to {
+    transform: translate3d(16vmax, 10vmax, 0) scale(1.18);
+  }
+}
+@keyframes float-2 {
+  to {
+    transform: translate3d(-14vmax, 16vmax, 0) scale(0.85);
+  }
+}
+@keyframes float-3 {
+  to {
+    transform: translate3d(-18vmax, -12vmax, 0) scale(1.2);
+  }
+}
+@keyframes float-4 {
+  to {
+    transform: translate3d(12vmax, -16vmax, 0) scale(0.9);
+  }
+}
+
+/* Film grain. Real frosted glass has texture; a pure gaussian blur reads
+   plastic. This is the cheapest way to break that up. */
+.grain {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: var(--grain-a);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ================================================================ panel == */
-.panel {
+/* ================================================================ glass == */
+.glass {
   position: relative;
-  background: var(--panel-bg);
-  backdrop-filter: blur(28px) saturate(135%);
-  -webkit-backdrop-filter: blur(28px) saturate(135%);
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(165%);
+  -webkit-backdrop-filter: blur(24px) saturate(165%);
   border: 1px solid var(--edge);
   border-radius: var(--r-lg);
   box-shadow: var(--sh-2);
   transition:
     border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
     background var(--dur) var(--ease);
 }
 
-.panel::before {
+/* Rim light. The single line that separates convincing glass from a blurred
+   grey box — real glass catches light along its edge. */
+.glass::before {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(160deg, var(--sheen), transparent 40%);
+  background: linear-gradient(150deg, var(--sheen), transparent 46%);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -234,11 +288,23 @@ button {
   z-index: 1;
 }
 
-.panel:hover {
-  border-color: var(--edge-hi);
+.glass:hover {
+  border-color: color-mix(in srgb, var(--brand) 34%, var(--edge));
 }
 
-/* ------------------------------------------------------------ typography */
+/* ---------------------------------------------------------------- tilt */
+.tilt {
+  --rx: 0deg;
+  --ry: 0deg;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease);
+}
+.tilt:hover {
+  transition: transform 0.09s linear;
+}
+
+/* ------------------------------------------------------------- utility */
 .mono {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
@@ -248,16 +314,9 @@ button {
 .eyebrow {
   font-family: var(--font-mono);
   font-size: var(--t-micro);
-  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   color: var(--ink-3);
-}
-
-.title {
-  font-size: var(--t-h2);
-  font-weight: 700;
-  letter-spacing: -0.025em;
 }
 
 .sr-only {
@@ -272,20 +331,16 @@ button {
   border: 0;
 }
 
-/* ---------------------------------------------------------------- scroll */
+/* Every scroll region in the app. */
 .scroll-y {
   overflow-y: auto;
   overscroll-behavior: contain;
   min-height: 0;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--edge) transparent;
-}
 *::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 *::-webkit-scrollbar-track {
   background: transparent;
@@ -295,76 +350,35 @@ button {
   border-radius: var(--r-pill);
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: var(--edge-hi);
+  background: color-mix(in srgb, var(--brand) 50%, transparent);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge) transparent;
 }
 
-/* ------------------------------------------------------------ primitives */
-.icon-btn {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  border-radius: var(--r-sm);
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--ink-3);
-  cursor: pointer;
-  transition:
-    background 0.2s var(--ease),
-    color 0.2s var(--ease),
-    border-color 0.2s var(--ease),
-    transform 0.2s var(--ease);
-}
-
-.icon-btn:hover:not(:disabled) {
-  background: var(--well);
-  border-color: var(--edge);
-  color: var(--ink);
-}
-
-.icon-btn:active:not(:disabled) {
-  transform: scale(0.92);
-}
-
-.icon-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-/* ---------------------------------------------------------------- motion */
-@keyframes rise {
+/* ------------------------------------------------------ shared motion */
+@keyframes enter-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
 }
 
-@keyframes fade {
+@keyframes pop-in {
   from {
     opacity: 0;
+    transform: scale(0.94);
   }
 }
 
-@keyframes pop {
+@keyframes draw {
   from {
-    opacity: 0;
-    transform: scale(0.92);
+    stroke-dashoffset: 260;
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes stroke {
-  from {
-    stroke-dashoffset: 300;
-  }
-}
-
+/* -------------------------------------------------------- reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -373,5 +387,8 @@ button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  .mesh i {
+    animation: none;
   }
 }
