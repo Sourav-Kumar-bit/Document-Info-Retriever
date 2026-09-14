@@ -1,25 +1,16 @@
-<section
-  class="glass drop"
-  appTilt="5"
-  [class.dragging]="dragging()"
-  [class.busy]="phase() === 'uploading' || phase() === 'queued'"
-  (dragover)="onDragOver($event)"
-  (dragleave)="onDragLeave($event)"
-  (drop)="onDrop($event)"
->
-  <div class="drop-top">
-    <!-- 3D page stack. It physically rises as the upload progresses, so the
-         object itself is the progress indicator. -->
+<section class="panel drop" [class.dragging]="dragging()"
+         [class.busy]="phase() === 'uploading' || phase() === 'queued'"
+         (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+  <div class="top">
     <div class="stack" aria-hidden="true" [style.--fill]="percent() / 100">
       @for (sheet of sheets; track sheet) {
         <span class="sheet" [style.--i]="sheet"></span>
       }
       <span class="halo"></span>
     </div>
-
-    <div class="drop-head">
+    <div>
       <p class="eyebrow">Step one</p>
-      <h2>Add a document</h2>
+      <h2 class="title">Add a document</h2>
     </div>
   </div>
 
@@ -30,29 +21,35 @@
         <div class="bar" role="progressbar" [attr.aria-valuenow]="percent()" aria-valuemin="0" aria-valuemax="100">
           <span [style.width.%]="percent()"></span>
         </div>
-        <p class="mono tiny">{{ percent() }}%</p>
+        <p class="mono tiny right">{{ percent() }}%</p>
       </div>
     }
     @case ('queued') {
-      <div class="state ok">
-        <p class="line"><span class="tick">✓</span> Indexing started</p>
+      <div class="state">
+        <p class="line ok"><span class="tick">✓</span> Indexing started</p>
         <p class="tiny">Splitting pages and building the index. About a minute.</p>
       </div>
     }
     @case ('rejected') {
-      <div class="state bad">
-        <p class="line">{{ message() }}</p>
+      <div class="state">
+        <p class="line bad">{{ message() }}</p>
         <button type="button" class="btn" (click)="dismiss()">Pick another file</button>
       </div>
     }
     @default {
-      <p class="hint">
-        Drop a PDF here, or <button type="button" class="link" (click)="browse()">choose a file</button>.
-      </p>
-      <p class="mono tiny meta">
-        PDF · {{ store.limits().max_upload_mb }} MB · {{ store.limits().max_pages }} pages max
-        · {{ store.documents().length }}/{{ store.limits().max_documents }} used
-      </p>
+      <button type="button" class="zone" (click)="browse()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14" stroke-linecap="round" />
+        </svg>
+        Choose a file
+      </button>
+      <p class="tiny">or drop a PDF anywhere on this card</p>
+      <div class="meta mono">
+        <span>PDF</span><i></i>
+        <span>{{ store.limits().max_upload_mb }} MB</span><i></i>
+        <span>{{ store.limits().max_pages }} pages</span><i></i>
+        <span>{{ store.documents().length }}/{{ store.limits().max_documents }}</span>
+      </div>
     }
   }
 
